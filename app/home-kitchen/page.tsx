@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { products } from "@/data/products";
+import { useState, useMemo, useEffect } from "react";
+import { getProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 import Image from "next/image";
+import type { Product } from "@/types/product";
 
 const CATEGORY_MAP: Record<string, string[]> = {
   All: [],
@@ -18,18 +19,25 @@ const CATEGORY_MAP: Record<string, string[]> = {
 
 export default function HomeKitchenPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    void getProducts().then((data) => setProducts(data ?? []));
+  }, []);
 
   /* ================= FAST FILTER ================= */
   const items = useMemo(() => {
     return products.filter((p) => {
-      if (p.category !== "home-kitchen") return false;
+      // ✅ FIXED: Product type only has "kitchen", not "home-kitchen"
+      if (p.category !== "kitchen") return false;
+
       if (activeCategory === "All") return true;
 
       const keywords = CATEGORY_MAP[activeCategory];
       const name = p.name.toLowerCase();
       return keywords.some((k) => name.includes(k));
     });
-  }, [activeCategory]);
+  }, [products, activeCategory]);
 
   return (
     <main className="bg-gradient-to-b from-gray-50 via-white to-amber-50 text-gray-900 min-h-screen">
@@ -40,8 +48,9 @@ export default function HomeKitchenPage() {
           alt="Home & Kitchen"
           fill
           priority
+          quality={85}
           sizes="100vw"
-          className="object-cover scale-105"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-white/40 backdrop-blur-sm" />
 
@@ -57,14 +66,14 @@ export default function HomeKitchenPage() {
           <div className="mt-8 sm:mt-10 flex gap-4 sm:gap-6 justify-end flex-wrap">
             <Link
               href="/cart"
-              className="px-8 sm:px-10 py-4 rounded-full bg-black text-white font-semibold hover:scale-105 transition"
+              className="px-8 sm:px-10 py-4 rounded-full bg-black text-white font-semibold hover:scale-105 transition-transform duration-200"
             >
               View Cart
             </Link>
 
             <Link
               href="/"
-              className="px-8 sm:px-10 py-4 rounded-full border border-black font-semibold hover:bg-black hover:text-white transition"
+              className="px-8 sm:px-10 py-4 rounded-full border border-black font-semibold hover:bg-black hover:text-white transition-colors duration-200"
             >
               Back to Home
             </Link>
@@ -142,19 +151,21 @@ function CategoryCard({
   return (
     <button
       onClick={onClick}
-      className={`group relative h-[120px] sm:h-[140px] rounded-xl overflow-hidden border transition
-                ${active ? "border-black" : "border-gray-200"}
+      className={`group relative h-[120px] sm:h-[140px] rounded-xl overflow-hidden border transition-all duration-200
+                ${active ? "border-black shadow-lg" : "border-gray-200 hover:border-gray-400"}
             `}
     >
       <Image
         src={image}
         alt={title}
         fill
+        quality={75}
         sizes="(max-width:768px) 50vw, 16vw"
-        className="object-cover transition-transform group-hover:scale-105"
+        className="object-cover transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
       />
 
-      <div className="absolute inset-0 bg-white/55 group-hover:bg-white/30 transition" />
+      <div className="absolute inset-0 bg-white/55 group-hover:bg-white/30 transition-colors duration-200" />
 
       <div className="relative z-10 h-full flex items-center justify-center px-2">
         <span className="text-xs sm:text-sm font-semibold text-gray-900 text-center">
