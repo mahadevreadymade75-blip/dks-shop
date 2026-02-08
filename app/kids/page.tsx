@@ -47,24 +47,34 @@ export default function KidsPage() {
     ================================================================= */
 
   const boysProducts = useMemo(() => {
-    return kidsProducts.filter((p) => {
-      if (filter === "winter") return p.subCategory === "winter";
-      if (filter === "boys")
-        return p.subCategory === "tshirts" || p.subCategory === "boys";
-      if (filter === "all")
-        return p.subCategory === "tshirts" || p.subCategory === "boys";
-      return false;
-    });
-  }, [kidsProducts, filter]);
+  return kidsProducts.filter((p) => {
 
-  const girlsProducts = useMemo(() => {
-    return kidsProducts.filter((p) => {
-      if (filter === "party") return p.subCategory === "party";
-      if (filter === "girls") return p.subCategory === "girls";
-      if (filter === "all") return p.subCategory === "girls";
-      return false;
-    });
-  }, [kidsProducts, filter]);
+    if (filter === "winter")
+      return p.subCategory === "Winter";
+
+    if (filter === "boys")
+      return p.subCategory === "Tshirts" || p.subCategory === "Boys";
+
+    if (filter === "all")
+      return true;
+
+    return false;
+  });
+}, [kidsProducts, filter]);
+
+
+ const girlsProducts = useMemo(() => {
+  return kidsProducts.filter((p) => {
+    if (filter === "party") return p.subCategory === "Party";
+
+    if (filter === "girls") return p.subCategory === "Girls";
+
+    if (filter === "all") return p.subCategory === "Girls";
+
+    return false;
+  });
+}, [kidsProducts, filter]);
+
 
   // Total count for display
   const totalProducts = boysProducts.length + girlsProducts.length;
