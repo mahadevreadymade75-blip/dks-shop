@@ -313,41 +313,52 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* ======================================================
-         FEATURED PRODUCTS - Premium Design
+         FEATURED PRODUCTS - Clean & Fast
       ====================================================== */}
-      <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-blue-50/30 via-white to-indigo-50/30">
+      <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between mb-8 sm:mb-10 md:mb-12">
+          {/* Section Header */}
+          <div className="flex items-end justify-between mb-6 sm:mb-8">
             <div>
-              <div className="inline-block mb-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 shadow-sm">
-                <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Trending Now
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-1">
                 Featured Products
               </h2>
-              <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mt-3"></div>
+              <p className="text-sm sm:text-base text-gray-600">
+                Handpicked for you
+              </p>
             </div>
+
             <Link
               href="/men"
-              className="hidden sm:flex items-center gap-2 text-sm sm:text-base text-blue-600 hover:text-blue-800 font-semibold hover:gap-3 transition-all duration-200"
+              className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors"
             >
               View All
-              <span className="text-lg">→</span>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </Link>
           </div>
 
+          {/* Products Slider */}
           <div
             ref={sliderRef}
-            className="flex gap-4 sm:gap-5 md:gap-6 overflow-x-auto pb-6 cursor-grab active:cursor-grabbing scrollbar-hide scroll-smooth"
+            className="flex gap-4 sm:gap-5 md:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
           >
             {featuredProducts.map((product) => (
               <div
                 key={product.id}
-                className="w-[180px] sm:w-[220px] md:w-[260px] h-[480px] sm:h-[520px] md:h-[560px] flex-none transform hover:scale-105 active:scale-95 transition-transform duration-200 will-change-transform"
+                className="w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] flex-none"
               >
                 <ProductCard product={product} />
               </div>
@@ -358,10 +369,22 @@ export default function HomePage() {
           <div className="mt-6 sm:hidden text-center">
             <Link
               href="/men"
-              className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors"
             >
               View All Products
-              <span>→</span>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </Link>
           </div>
         </div>
