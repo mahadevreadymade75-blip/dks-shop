@@ -99,7 +99,7 @@ We'll contact you shortly to confirm your order.
           <p className="text-gray-600 mb-6">
             Add items to cart before checkout
           </p>
-          
+          <a
             href="/"
             className="inline-block px-8 py-3 rounded-full bg-black text-white font-semibold hover:bg-gray-800 transition"
           >
