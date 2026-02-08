@@ -40,6 +40,16 @@ export default function ProductDetailPage() {
     [allProducts, id],
   );
 
+  // ✅ ADDED: Calculate discount
+  const discount = useMemo(() => {
+    if (!product?.originalPrice || product.originalPrice <= product.price) {
+      return null;
+    }
+    return Math.round(
+      ((product.originalPrice - product.price) / product.originalPrice) * 100,
+    );
+  }, [product]);
+
   /* ================= SHUFFLE HELPER ================= */
   const shuffle = <T,>(arr: T[]) => [...arr].sort(() => Math.random() - 0.5);
 
@@ -168,6 +178,18 @@ export default function ProductDetailPage() {
                 onLoadingComplete={() => setImageLoaded(true)}
               />
 
+              {/* ✅ ADDED: Discount Badge */}
+              {discount && (
+                <div className="absolute top-4 left-4 z-10">
+                  <div className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-4 py-2 rounded-xl shadow-xl">
+                    <div className="text-2xl font-black leading-none">
+                      {discount}%
+                    </div>
+                    <div className="text-xs font-bold tracking-wide">OFF</div>
+                  </div>
+                </div>
+              )}
+
               {/* Image Counter */}
               <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-medium">
                 {activeImage + 1} / {images.length}
@@ -235,26 +257,57 @@ export default function ProductDetailPage() {
           <div className="flex flex-col gap-6">
             {/* Product Name */}
             <div>
-              <div className="inline-block mb-3 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 shadow-sm">
-                <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  {product.category}
-                </span>
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <div className="inline-block px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 shadow-sm">
+                  <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent capitalize">
+                    {product.category}
+                  </span>
+                </div>
+                {/* ✅ ADDED: Deal Badge */}
+                {discount && (
+                  <div className="inline-block px-4 py-1.5 rounded-full bg-gradient-to-r from-red-500 to-pink-600 shadow-sm">
+                    <span className="text-xs sm:text-sm font-bold text-white">
+                      🔥 Limited Deal
+                    </span>
+                  </div>
+                )}
               </div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                 {product.name}
               </h1>
             </div>
 
-            {/* Price */}
-            <div className="flex items-baseline gap-3">
-              <p className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                ₹{product.price.toLocaleString()}
-              </p>
-              {product.originalPrice && (
-                <p className="text-xl text-gray-400 line-through">
-                  ₹{product.originalPrice.toLocaleString()}
+            {/* ✅ UPDATED: Price Section */}
+            <div>
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <p className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  ₹{product.price.toLocaleString()}
                 </p>
-              )}
+                {product.originalPrice &&
+                  product.originalPrice > product.price && (
+                    <>
+                      <p className="text-2xl text-gray-400 line-through">
+                        ₹{product.originalPrice.toLocaleString()}
+                      </p>
+                      <div className="inline-block px-3 py-1 rounded-lg bg-red-100 border border-red-200">
+                        <span className="text-sm font-bold text-red-700">
+                          {discount}% OFF
+                        </span>
+                      </div>
+                    </>
+                  )}
+              </div>
+              {/* ✅ ADDED: Savings Display */}
+              {product.originalPrice &&
+                product.originalPrice > product.price && (
+                  <p className="mt-2 text-lg font-semibold text-green-700">
+                    💰 You save: ₹
+                    {(product.originalPrice - product.price).toLocaleString()}
+                  </p>
+                )}
+              <p className="mt-1 text-sm text-gray-500">
+                Inclusive of all taxes
+              </p>
             </div>
 
             {/* Description */}
