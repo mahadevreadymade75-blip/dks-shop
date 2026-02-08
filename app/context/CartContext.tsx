@@ -7,6 +7,7 @@ import {
   ReactNode,
   useMemo,
   useCallback,
+  useEffect,
 } from "react";
 import { CartItem } from "@/types/cart";
 
@@ -17,7 +18,8 @@ type CartAction =
   | { type: "INCREASE_QTY"; payload: { id: number; size?: string } }
   | { type: "DECREASE_QTY"; payload: { id: number; size?: string } }
   | { type: "REMOVE_ITEM"; payload: { id: number; size?: string } }
-  | { type: "CLEAR_CART" };
+  | { type: "CLEAR_CART" }
+  | { type: "LOAD_CART"; payload: CartItem[] };
 
 interface CartContextType {
   cart: CartItem[];
@@ -26,12 +28,46 @@ interface CartContextType {
   decreaseQty: (id: number, size?: string) => void;
   removeFromCart: (id: number, size?: string) => void;
   clearCart: () => void;
+  totalItems: number;
+  totalPrice: number;
+  isEmpty: boolean;
 }
+
+/* ================= CONSTANTS ================= */
+
+const CART_STORAGE_KEY = "dks-handloom-cart";
+
+/* ================= HELPER FUNCTIONS ================= */
+
+const loadCartFromStorage = (): CartItem[] => {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const saved = localStorage.getItem(CART_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error("Failed to load cart from localStorage:", error);
+    return [];
+  }
+};
+
+const saveCartToStorage = (cart: CartItem[]): void => {
+  if (typeof window === "undefined") return;
+
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  } catch (error) {
+    console.error("Failed to save cart to localStorage:", error);
+  }
+};
 
 /* ================= REDUCER ================= */
 
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   switch (action.type) {
+    case "LOAD_CART":
+      return action.payload;
+
     case "ADD_ITEM": {
       const existing = state.find(
         (i) => i.id === action.payload.id && i.size === action.payload.size,
@@ -56,13 +92,13 @@ const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
       );
 
     case "DECREASE_QTY":
-      return state.map((i) =>
-        i.id === action.payload.id &&
-        i.size === action.payload.size &&
-        i.qty > 1
-          ? { ...i, qty: i.qty - 1 }
-          : i,
-      );
+      return state
+        .map((i) =>
+          i.id === action.payload.id && i.size === action.payload.size
+            ? { ...i, qty: i.qty - 1 }
+            : i,
+        )
+        .filter((i) => i.qty > 0); // Auto-remove if qty becomes 0
 
     case "REMOVE_ITEM":
       return state.filter(
@@ -84,7 +120,16 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 /* ================= PROVIDER ================= */
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, dispatch] = useReducer(cartReducer, []);
+  const [cart, dispatch] = useReducer(cartReducer, [], () => {
+    // Lazy initialization - load cart from localStorage on mount
+    return loadCartFromStorage();
+  });
+
+  /* ========= SYNC CART TO LOCALSTORAGE ========= */
+
+  useEffect(() => {
+    saveCartToStorage(cart);
+  }, [cart]);
 
   /* ========= MEMOIZED ACTIONS ========= */
 
@@ -113,6 +158,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = useCallback(() => dispatch({ type: "CLEAR_CART" }), []);
 
+  /* ========= MEMOIZED COMPUTED VALUES ========= */
+
+  const totalItems = useMemo(
+    () => cart.reduce((sum, item) => sum + item.qty, 0),
+    [cart],
+  );
+
+  const totalPrice = useMemo(
+    () => cart.reduce((sum, item) => sum + item.price * item.qty, 0),
+    [cart],
+  );
+
+  const isEmpty = useMemo(() => cart.length === 0, [cart.length]);
+
   /* ========= MEMOIZED CONTEXT VALUE ========= */
 
   const value = useMemo(
@@ -123,8 +182,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       decreaseQty,
       removeFromCart,
       clearCart,
+      totalItems,
+      totalPrice,
+      isEmpty,
     }),
-    [cart, addToCart, increaseQty, decreaseQty, removeFromCart, clearCart],
+    [
+      cart,
+      addToCart,
+      increaseQty,
+      decreaseQty,
+      removeFromCart,
+      clearCart,
+      totalItems,
+      totalPrice,
+      isEmpty,
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

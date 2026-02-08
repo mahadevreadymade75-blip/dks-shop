@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from 'react';
-import { Product } from '../page';
-import Image from 'next/image';
+import { useState } from "react";
+import { Product } from "../page";
 
 interface ProductPreviewProps {
   product: Product;
@@ -25,72 +24,92 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
-    
+
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<span key={i} className="text-yellow-400">★</span>);
+      stars.push(
+        <span key={i} className="text-yellow-400 text-lg">
+          ★
+        </span>,
+      );
     }
-    
+
     if (hasHalfStar) {
-      stars.push(<span key="half" className="text-yellow-400">☆</span>);
+      stars.push(
+        <span key="half" className="text-yellow-400 text-lg">
+          ☆
+        </span>,
+      );
     }
-    
+
     const remainingStars = 5 - Math.ceil(rating);
     for (let i = 0; i < remainingStars; i++) {
-      stars.push(<span key={`empty-${i}`} className="text-gray-400">☆</span>);
+      stars.push(
+        <span key={`empty-${i}`} className="text-gray-300 text-lg">
+          ☆
+        </span>,
+      );
     }
-    
+
     return stars;
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-white">Product Preview</h2>
+      {/* Header */}
+      <div className="flex items-center justify-between bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Product Preview</h2>
+          <p className="text-sm text-gray-600 mt-1">Customer-facing view</p>
+        </div>
         <button
           onClick={onClose}
-          className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+          className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors flex items-center gap-2"
         >
-          Close Preview
+          <span>✕</span>
+          <span>Close</span>
         </button>
       </div>
-      
+
       {/* Preview Card */}
-      <div className="bg-white rounded-lg overflow-hidden shadow-lg max-w-4xl mx-auto">
+      <div className="bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Image Carousel */}
-          <div className="relative">
-            <div className="aspect-square relative bg-gray-100">
+          <div className="relative bg-gray-50">
+            <div className="aspect-square relative">
               <img
                 src={images[currentImageIndex]}
                 alt={product.name}
-                className="object-cover"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.jpg";
+                }}
               />
-              
+
               {images.length > 1 && (
                 <>
                   <button
                     onClick={prevImage}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center transition-all shadow-lg"
                   >
                     ←
                   </button>
-                  
+
                   <button
                     onClick={nextImage}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center transition-all shadow-lg"
                   >
                     →
                   </button>
-                  
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
                     {images.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`w-3 h-3 rounded-full transition-all ${
+                        className={`w-2 h-2 rounded-full transition-all ${
                           index === currentImageIndex
-                            ? 'bg-white'
-                            : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+                            ? "bg-white w-6"
+                            : "bg-white/50 hover:bg-white/75"
                         }`}
                       />
                     ))}
@@ -98,26 +117,28 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
                 </>
               )}
             </div>
-            
+
+            {/* Thumbnails */}
             {images.length > 1 && (
-              <div className="p-4 bg-gray-50">
-                <div className="flex space-x-2 overflow-x-auto">
+              <div className="p-4 bg-white border-t border-gray-200">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
                   {images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
                       className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
                         index === currentImageIndex
-                          ? 'border-blue-500'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? "border-black ring-2 ring-gray-300"
+                          : "border-gray-200 hover:border-gray-400"
                       }`}
                     >
                       <img
                         src={image}
-                        alt={`${product.name} ${index + 1}`}
-                        width={64}
-                        height={64}
+                        alt={`Thumbnail ${index + 1}`}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/placeholder.jpg";
+                        }}
                       />
                     </button>
                   ))}
@@ -125,90 +146,167 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
               </div>
             )}
           </div>
-          
+
           {/* Product Details */}
-          <div className="p-6 space-y-6">
-            <div>
-              <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full capitalize">
+          <div className="p-6 lg:p-8 space-y-6">
+            {/* Category Badges */}
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg capitalize">
                 {product.category}
               </span>
               {product.subCategory && (
-                <span className="inline-block ml-2 px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full capitalize">
+                <span className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg capitalize">
                   {product.subCategory}
                 </span>
               )}
             </div>
-            
-            <h1 className="text-3xl font-bold text-gray-900">
+
+            {/* Product Name */}
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
               {product.name}
             </h1>
-            
-            <div className="flex items-center space-x-2">
+
+            {/* Rating */}
+            <div className="flex items-center gap-3">
               <div className="flex items-center">
                 {renderStars(product.rating)}
               </div>
-              <span className="text-lg font-medium text-gray-900">
+              <span className="text-lg font-bold text-gray-900">
                 {product.rating.toFixed(1)}
               </span>
-              <span className="text-gray-500">
+              <span className="text-gray-500 text-sm">
                 ({product.reviews.toLocaleString()} reviews)
               </span>
             </div>
-            
-            <div className="text-4xl font-bold text-green-600">
-              Rs {product.price.toLocaleString()}
+
+            {/* Price */}
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-green-600">
+                ₹{product.price.toLocaleString()}
+              </span>
+              <span className="text-gray-500 text-sm">
+                inclusive of all taxes
+              </span>
             </div>
-            
+
+            {/* Sizes */}
+            {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase">
+                  Available Sizes
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map((size, index) => (
+                    <div
+                      key={index}
+                      className="px-4 py-2 border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-700"
+                    >
+                      {size}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Description */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+              <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase">
+                Description
+              </h3>
               <p className="text-gray-700 leading-relaxed">
                 {product.description}
               </p>
             </div>
-            
+
+            {/* Action Buttons */}
             <div className="space-y-3 pt-4">
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-                Add to Cart
+              <button className="w-full bg-black hover:bg-gray-800 text-white font-bold py-3.5 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <span>🛒</span>
+                <span>Add to Cart</span>
               </button>
-              <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors">
-                Add to Wishlist
+              <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3.5 px-6 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <span>❤️</span>
+                <span>Add to Wishlist</span>
               </button>
             </div>
-            
-            <div className="border-t pt-4">
-              <h4 className="font-semibold text-gray-900 mb-2">Product Information</h4>
-              <div className="text-sm text-gray-600 space-y-1">
-                <div>Product ID: #{product.id}</div>
-                <div>Category: <span className="capitalize">{product.category}</span></div>
+
+            {/* Product Information */}
+            <div className="border-t border-gray-200 pt-6">
+              <h4 className="text-sm font-bold text-gray-900 mb-3 uppercase">
+                Product Information
+              </h4>
+              <div className="space-y-2 text-sm">
+                <InfoRow label="Product ID" value={`#${product.id}`} />
+                <InfoRow label="Category" value={product.category} capitalize />
                 {product.subCategory && (
-                  <div>Subcategory: <span className="capitalize">{product.subCategory}</span></div>
+                  <InfoRow
+                    label="Subcategory"
+                    value={product.subCategory}
+                    capitalize
+                  />
                 )}
-                {Array.isArray(product.sizes) && product.sizes.length > 0 && (
-                  <div>Sizes: {product.sizes.join(', ')}</div>
-                )}
-                <div>Average Rating: {product.rating}/5</div>
-                <div>Total Reviews: {product.reviews.toLocaleString()}</div>
-                <div>Total Images: {images.length}</div>
+                <InfoRow label="Average Rating" value={`${product.rating}/5`} />
+                <InfoRow
+                  label="Total Reviews"
+                  value={product.reviews.toLocaleString()}
+                />
+                <InfoRow
+                  label="Total Images"
+                  value={images.length.toString()}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <div className="flex items-start space-x-3">
-          <div className="text-yellow-600">
-            ℹ️
-          </div>
-          <div>
-            <h4 className="font-semibold text-yellow-800 mb-1">Preview Note</h4>
-            <p className="text-yellow-700 text-sm">
-              This is how the product will appear to customers on the frontend. 
-              The styling and layout may differ slightly based on the actual product card implementation.
+
+      {/* Info Banner */}
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+        <div className="flex gap-3">
+          <div className="text-2xl">ℹ️</div>
+          <div className="flex-1">
+            <h4 className="font-bold text-blue-900 mb-1">Preview Mode</h4>
+            <p className="text-blue-800 text-sm leading-relaxed">
+              This is how the product will appear to customers. The actual
+              frontend design may have slight variations based on your theme
+              settings.
             </p>
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ================= HELPER COMPONENT ================= */
+
+function InfoRow({
+  label,
+  value,
+  capitalize = false,
+}: {
+  label: string;
+  value: string;
+  capitalize?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between py-1.5">
+      <span className="text-gray-600 font-medium">{label}:</span>
+      <span
+        className={`text-gray-900 font-semibold ${capitalize ? "capitalize" : ""}`}
+      >
+        {value}
+      </span>
     </div>
   );
 }

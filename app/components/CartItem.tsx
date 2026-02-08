@@ -50,18 +50,18 @@ function CartItem({ item }: Props) {
   }, [removeFromCart, item.id, item.size]);
 
   return (
-    <div className="group relative overflow-hidden rounded-xl sm:rounded-2xl bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 p-4 sm:p-5">
+    <div className="group rounded-lg bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4">
         {/* LEFT - Image & Info */}
-        <div className="flex items-center gap-3 sm:gap-4 flex-1 w-full sm:w-auto">
-          {/* IMAGE - OPTIMIZED with Next.js Image */}
-          <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-lg sm:rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
+        <div className="flex items-center gap-4 flex-1 w-full sm:w-auto">
+          {/* IMAGE */}
+          <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
             <Image
               src={imageSrc}
               alt={item.name}
               fill
               sizes="(max-width: 640px) 80px, 96px"
-              className="object-cover object-center transition-transform duration-300 group-hover:scale-110"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
               quality={75}
             />
@@ -69,24 +69,23 @@ function CartItem({ item }: Props) {
 
           {/* INFO */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 truncate">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2">
               {item.name}
             </h3>
 
             {item.size && (
-              <p className="text-xs text-gray-500 mt-1">
-                Size:{" "}
-                <span className="font-medium text-gray-700">{item.size}</span>
-              </p>
+              <span className="inline-block mt-1.5 px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                Size: {item.size}
+              </span>
             )}
 
-            <p className="text-xs sm:text-sm text-gray-600 mt-1 font-medium">
-              ₹{item.price.toLocaleString()} / item
+            <p className="text-sm text-gray-600 mt-1.5">
+              ₹{item.price.toLocaleString()} each
             </p>
 
             {/* MOBILE: Total Price */}
             <div className="sm:hidden mt-2">
-              <p className="text-lg font-bold text-green-600">
+              <p className="text-lg font-bold text-gray-900">
                 ₹{totalPrice.toLocaleString()}
               </p>
             </div>
@@ -94,23 +93,23 @@ function CartItem({ item }: Props) {
         </div>
 
         {/* MIDDLE - Quantity Controls */}
-        <div className="flex items-center justify-between sm:justify-start gap-4 sm:gap-5 w-full sm:w-auto">
-          <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center justify-between sm:justify-start gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-1">
             <button
               onClick={handleDecrease}
-              className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 transition-colors duration-150 flex items-center justify-center font-bold text-lg sm:text-xl shadow-sm"
+              className="h-8 w-8 rounded hover:bg-gray-100 text-gray-700 transition-colors flex items-center justify-center font-semibold"
               aria-label="Decrease quantity"
             >
               −
             </button>
 
-            <span className="text-base sm:text-lg font-bold text-gray-900 min-w-[2ch] text-center">
+            <span className="text-base font-semibold text-gray-900 min-w-[2ch] text-center px-2">
               {item.qty}
             </span>
 
             <button
               onClick={handleIncrease}
-              className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 transition-colors duration-150 flex items-center justify-center font-bold text-lg sm:text-xl shadow-sm"
+              className="h-8 w-8 rounded hover:bg-gray-100 text-gray-700 transition-colors flex items-center justify-center font-semibold"
               aria-label="Increase quantity"
             >
               +
@@ -120,23 +119,23 @@ function CartItem({ item }: Props) {
           {/* MOBILE: Remove Button */}
           <button
             onClick={handleRemove}
-            className="sm:hidden px-4 py-1.5 rounded-full bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-600 transition-colors duration-150 font-medium text-sm border border-red-200"
-            aria-label="Remove item from cart"
+            className="sm:hidden text-red-600 hover:text-red-700 font-medium text-sm"
+            aria-label="Remove item"
           >
             Remove
           </button>
         </div>
 
         {/* RIGHT - Desktop Price & Remove */}
-        <div className="hidden sm:flex items-center gap-4 md:gap-6">
-          <div className="text-lg md:text-xl font-bold text-green-600 whitespace-nowrap">
+        <div className="hidden sm:flex items-center gap-6">
+          <div className="text-lg font-bold text-gray-900 min-w-[100px] text-right">
             ₹{totalPrice.toLocaleString()}
           </div>
 
           <button
             onClick={handleRemove}
-            className="px-4 py-2 rounded-full bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-600 transition-colors duration-150 font-medium text-sm border border-red-200 whitespace-nowrap"
-            aria-label="Remove item from cart"
+            className="text-red-600 hover:text-red-700 font-medium text-sm"
+            aria-label="Remove item"
           >
             Remove
           </button>
