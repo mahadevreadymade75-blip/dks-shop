@@ -19,7 +19,6 @@ export default function ProductDetailPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -101,25 +100,38 @@ export default function ProductDetailPage() {
         : ["/placeholder.jpg"];
 
   const handleAddToCart = () => {
-    if (product.sizes && !selectedSize) {
-      alert("Please select a size");
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      alert("⚠️ Please select a size first");
       return;
     }
 
     setIsAddingToCart(true);
 
-    for (let i = 0; i < quantity; i++) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        qty: 1,
-        size: selectedSize ?? undefined,
-        images,
-      });
-    }
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      qty: 1,
+      size: selectedSize ?? undefined,
+      images,
+    });
 
     setTimeout(() => setIsAddingToCart(false), 500);
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      alert("⚠️ Please select a size first");
+      return;
+    }
+
+    // Create WhatsApp message
+    const message = `Hi! I want to order:\n\n*${product.name}*\nPrice: ₹${product.price.toLocaleString()}\n${selectedSize ? `Size: ${selectedSize}` : ""}\n\nProduct Link: ${window.location.href}`;
+
+    const whatsappNumber = "918741803589"; // Your WhatsApp number
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, "_blank");
   };
 
   const nextImage = () => {
@@ -353,7 +365,8 @@ export default function ProductDetailPage() {
             {product.sizes && product.sizes.length > 0 && (
               <div className="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">
-                  Select Size
+                  Select Size{" "}
+                  {!selectedSize && <span className="text-red-500">*</span>}
                 </h3>
                 <div className="flex gap-3 flex-wrap">
                   {product.sizes.map((size) => (
@@ -372,30 +385,6 @@ export default function ProductDetailPage() {
                 </div>
               </div>
             )}
-
-            {/* Quantity Selector */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">
-                Quantity
-              </h3>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-gray-900 font-bold text-xl flex items-center justify-center transition-colors"
-                >
-                  −
-                </button>
-                <span className="text-2xl font-bold min-w-[3ch] text-center">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-lg border-2 border-gray-300 hover:border-gray-900 font-bold text-xl flex items-center justify-center transition-colors"
-                >
-                  +
-                </button>
-              </div>
-            </div>
 
             {/* Action Buttons */}
             <div className="space-y-3 pt-2">
@@ -416,31 +405,14 @@ export default function ProductDetailPage() {
                 )}
               </button>
 
-              <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-xl transition-colors">
-                💬 Order on WhatsApp
+              <button
+                onClick={handleWhatsAppOrder}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  💬 Order on WhatsApp
+                </span>
               </button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
-              <div className="text-center">
-                <div className="text-2xl mb-1">🚚</div>
-                <p className="text-xs font-semibold text-gray-600">
-                  Free Shipping
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl mb-1">✅</div>
-                <p className="text-xs font-semibold text-gray-600">
-                  Verified Product
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl mb-1">💯</div>
-                <p className="text-xs font-semibold text-gray-600">
-                  100% Original
-                </p>
-              </div>
             </div>
           </div>
         </div>
