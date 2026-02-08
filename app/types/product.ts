@@ -4,6 +4,7 @@ interface BaseProduct {
     id: number;
     name: string;
     price: number;
+    originalPrice?: number; // ✅ ADDED - for showing discount/strike-through price
 
     category: string;
     subCategory?: string;
@@ -65,11 +66,7 @@ export interface ShoeProduct extends BaseProduct {
     material?: "Leather" | "Synthetic" | "Canvas" | "Rubber";
 }
 
-/* ================= ONLY FIX: KIDS MATERIAL TYPE ================= */
-/* ❌ problem: KidsProduct.material union too strict
-   ✅ fix: allow string so party / ethnic materials work
-   ❗ NOTHING ELSE TOUCHED
-*/
+/* ================= KIDS ================= */
 
 export interface KidsProduct extends BaseProduct {
     category: "kids";
@@ -81,14 +78,12 @@ export interface KidsProduct extends BaseProduct {
         | "winter"
         | "party";
 
-    // 🔥 FIX HERE (THIS IS THE ONLY CHANGE)
     material?: 
         | "Cotton"
         | "Wool"
         | "Polyester"
         | string; // ✅ allows: "Net", "Net & Sequin", "Georgette & Silk Blend"
 }
-
 
 /* ================= KITCHEN ================= */
 
