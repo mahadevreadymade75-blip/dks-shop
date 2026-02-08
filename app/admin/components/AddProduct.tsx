@@ -1,0 +1,437 @@
+"use client";
+
+import { useState } from "react";
+import { Product } from "../page";
+
+interface AddProductProps {
+  onAdd: (product: Omit<Product, "id">) => void;
+  onCancel: () => void;
+}
+
+export function AddProduct({ onAdd, onCancel }: AddProductProps) {
+  const [formData, setFormData] = useState({
+    ID: "",
+    name: "",
+    price: 0,
+    category: "",
+    subCategory: "",
+    description: "",
+    image: "",
+    images: [""],
+    sizes: [] as string[],
+    rating: 4.0,
+    reviews: 0,
+  });
+
+  const [sizesInput, setSizesInput] = useState("");
+  const [isUploadingMain, setIsUploadingMain] = useState(false);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const categories = ["shoes", "watches", "men", "women", "kids", "kitchen"];
+
+  const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+  const uploadToCloudinary = async (file: File): Promise<string | null> => {
+    if (!CLOUD_NAME || !UPLOAD_PRESET) {
+      console.error(
+        "Cloudinary env vars missing: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME or NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET",
+      );
+      setErrors((prev) => ({
+        ...prev,
+        image:
+          "Image upload is not configured. Please set Cloudinary env vars.",
+      }));
+      return null;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg);
+      }
+      const data = await res.json();
+      return data.secure_url as string;
+    } catch (err) {
+      console.error("Cloudinary upload failed", err);
+      setErrors((prev) => ({
+        ...prev,
+        image: "Failed to upload image. Please try again.",
+      }));
+      return null;
+    }
+  };
+
+  const handleMainImageFile = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingMain(true);
+    const url = await uploadToCloudinary(file);
+    setIsUploadingMain(false);
+    if (url) {
+      setFormData((prev) => ({ ...prev, image: url }));
+      setErrors((prev) => ({ ...prev, image: "" }));
+    }
+  };
+
+  const handleExtraImageFile = async (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingIndex(index);
+    const url = await uploadToCloudinary(file);
+    setUploadingIndex(null);
+    if (url) {
+      const newImages = [...formData.images];
+      newImages[index] = url;
+      setFormData((prev) => ({ ...prev, images: newImages }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.ID.trim()) newErrors.ID = "Product ID is required";
+    if (!formData.name.trim()) newErrors.name = "Product name is required";
+    if (formData.price <= 0) newErrors.price = "Price must be greater than 0";
+    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.image.trim()) newErrors.image = "Main image is required";
+    if (formData.rating < 0 || formData.rating > 5)
+      newErrors.rating = "Rating must be between 0 and 5";
+    if (formData.reviews < 0)
+      newErrors.reviews = "Reviews count cannot be negative";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      const productData = {
+        ...formData,
+        images: formData.images.filter((img) => img.trim() !== ""),
+        subCategory: formData.subCategory?.trim()
+          ? formData.subCategory.trim()
+          : undefined,
+        sizes: Array.isArray(formData.sizes)
+          ? formData.sizes
+              .filter((s) => s && s.trim() !== "")
+              .map((s) => s.trim())
+          : [],
+      };
+      onAdd(productData);
+    }
+  };
+
+  const handleImageChange = (index: number, value: string) => {
+    const newImages = [...formData.images];
+    newImages[index] = value;
+    setFormData({ ...formData, images: newImages });
+  };
+
+  const addImageField = () => {
+    setFormData({ ...formData, images: [...formData.images, ""] });
+  };
+
+  const removeImageField = (index: number) => {
+    const newImages = formData.images.filter((_, i) => i !== index);
+    setFormData({ ...formData, images: newImages });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-gray-900">Add New Product</h2>
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border border-gray-200 rounded-lg p-6 space-y-6"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Product ID *
+            </label>
+            <input
+              type="text"
+              value={formData.ID}
+              onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter product ID (e.g. SH-1001)"
+            />
+            {errors.ID && (
+              <p className="text-red-600 text-sm mt-1">{errors.ID}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Product Name *
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter product name"
+            />
+            {errors.name && (
+              <p className="text-red-600 text-sm mt-1">{errors.name}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Price (₹) *
+            </label>
+            <input
+              type="number"
+              value={formData.price}
+              onChange={(e) =>
+                setFormData({ ...formData, price: Number(e.target.value) })
+              }
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="0"
+              min="0"
+            />
+            {errors.price && (
+              <p className="text-red-600 text-sm mt-1">{errors.price}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category *
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select category</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat} className="capitalize">
+                  {cat}
+                </option>
+              ))}
+            </select>
+            {errors.category && (
+              <p className="text-red-600 text-sm mt-1">{errors.category}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Subcategory (optional)
+            </label>
+            <input
+              type="text"
+              value={formData.subCategory}
+              onChange={(e) =>
+                setFormData({ ...formData, subCategory: e.target.value })
+              }
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. shirts, tshirts"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Main Image *
+            </label>
+            <div className="space-y-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleMainImageFile}
+                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {isUploadingMain && (
+                <p className="text-sm text-gray-600">Uploading image...</p>
+              )}
+              {formData.image && (
+                <img
+                  src={formData.image}
+                  alt="Main preview"
+                  className="mt-2 h-24 w-24 object-cover rounded"
+                />
+              )}
+            </div>
+            {errors.image && (
+              <p className="text-red-600 text-sm mt-1">{errors.image}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Sizes (optional, comma-separated)
+            </label>
+            <input
+              type="text"
+              value={sizesInput}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSizesInput(val);
+                setFormData({
+                  ...formData,
+                  sizes: val
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean),
+                });
+              }}
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. S, M, L, XL"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Rating (0-5)
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              value={formData.rating}
+              onChange={(e) =>
+                setFormData({ ...formData, rating: Number(e.target.value) })
+              }
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              min="0"
+              max="5"
+            />
+            {errors.rating && (
+              <p className="text-red-600 text-sm mt-1">{errors.rating}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Reviews Count
+            </label>
+            <input
+              type="number"
+              value={formData.reviews}
+              onChange={(e) =>
+                setFormData({ ...formData, reviews: Number(e.target.value) })
+              }
+              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              min="0"
+            />
+            {errors.reviews && (
+              <p className="text-red-600 text-sm mt-1">{errors.reviews}</p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Description *
+          </label>
+          <textarea
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            rows={3}
+            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter product description"
+          />
+          {errors.description && (
+            <p className="text-red-600 text-sm mt-1">{errors.description}</p>
+          )}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Additional Images
+            </label>
+            <button
+              type="button"
+              onClick={addImageField}
+              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
+            >
+              Add Image
+            </button>
+          </div>
+          <div className="space-y-2">
+            {formData.images.map((image, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <div className="flex-1">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleExtraImageFile(index, e)}
+                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  {uploadingIndex === index && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Uploading image...
+                    </p>
+                  )}
+                  {image && (
+                    <img
+                      src={image}
+                      alt={`Image ${index + 1}`}
+                      className="mt-2 h-20 w-20 object-cover rounded"
+                    />
+                  )}
+                </div>
+                {formData.images.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeImageField(index)}
+                    className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-4 pt-6">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg border border-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            Add Product
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

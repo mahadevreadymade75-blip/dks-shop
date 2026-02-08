@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+html,
+body {
+  min-height: 100%;
+}
+
+/* PERMANENT DARK UI */
+body {
+  background-color: dark-black;
+  color: white;
+}
+
+/* auto scroll animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 35s linear infinite;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
