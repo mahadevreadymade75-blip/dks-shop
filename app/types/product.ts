@@ -129,7 +129,7 @@ export interface WatchProduct extends BaseProduct {
 
 export interface ShoeProduct extends BaseProduct {
     category: "shoes" | "sandals";
-    subCategory?: "casual" | "formal" | "sports" | "sneakers" | "loafers" | "boots" | "slippers" | "flip-flops";
+    subCategory?: "Casual" | "Formal" | "Sports" | "Sneakers" | "Loafers" | "Boots" | "Slippers" | "Flip-Flops";
 
     material?: "Leather" | "Synthetic" | "Canvas" | "Rubber" | "Mesh" | "Suede" | "Fabric" | string;
     
@@ -153,18 +153,18 @@ export interface ShoeProduct extends BaseProduct {
 export interface KidsProduct extends BaseProduct {
     category: "kids";
     subCategory:
-        | "boys"
-        | "girls"
-        | "tshirts"
-        | "winter"
-        | "party"
-        | "ethnic"
-        | "casual"
-        | "formal"
-        | "innerwear"
-        | "footwear"
-        | "accessories"
-        | "toys";
+        | "Boys"
+        | "Girls"
+        | "Tshirts"
+        | "Winter"
+        | "Party"
+        | "Ethnic"
+        | "Casual"
+        | "Formal"
+        | "Innerwear"
+        | "Footwear"
+        | "Accessories"
+        | "Toys";
 
     ageGroup?: "0-2 years" | "2-5 years" | "5-8 years" | "8-12 years" | "12-16 years";
     
@@ -199,15 +199,15 @@ export interface KidsProduct extends BaseProduct {
 export interface KitchenProduct extends BaseProduct {
     category: "kitchen";
     subCategory:
-        | "cookware"
-        | "dinnerware"
-        | "storage"
-        | "appliances"
-        | "tools"
-        | "cutlery"
+        | "Cookware"
+        | "Dinnerware"
+        | "Storage"
+        | "Appliances"
+        | "Tools"
+        | "Cutlery"
         | "containers"
-        | "utensils"
-        | "bakeware";
+        | "Tensils"
+        | "Bakeware";
 
     material?: "Steel" | "Plastic" | "Glass" | "Ceramic" | "Aluminum" | "Non-Stick" | "Cast Iron" | "Wood" | "Silicone" | string;
     
@@ -242,14 +242,14 @@ export interface KitchenProduct extends BaseProduct {
 export interface HomeDecorProduct extends BaseProduct {
     category: "home-decor";
     subCategory:
-        | "wall-art"
-        | "cushions"
-        | "curtains"
-        | "bedsheets"
-        | "towels"
-        | "rugs"
-        | "lamps"
-        | "decorative";
+        | "Wall-art"
+        | "Cushions"
+        | "Curtains"
+        | "Bedsheets"
+        | "Towels"
+        | "Rugs"
+        | "Lamps"
+        | "Decorative";
 
     material?: string;
     
