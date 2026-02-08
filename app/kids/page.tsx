@@ -47,34 +47,50 @@ export default function KidsPage() {
     ================================================================= */
 
   const boysProducts = useMemo(() => {
-  return kidsProducts.filter((p) => {
+    return kidsProducts.filter((p) => {
+      const subCat = p.subCategory?.toLowerCase() || "";
 
-    if (filter === "winter")
-      return p.subCategory === "Winter";
+      // Winter filter - show only winter items
+      if (filter === "winter") {
+        return subCat === "winter";
+      }
 
-    if (filter === "boys")
-      return p.subCategory === "Tshirts" || p.subCategory === "Boys";
+      // Boys filter - show boys + tshirts
+      if (filter === "boys") {
+        return subCat === "boys" || subCat === "tshirts";
+      }
 
-    if (filter === "all")
-      return true;
+      // All filter - show boys + tshirts + winter
+      if (filter === "all") {
+        return subCat === "boys" || subCat === "tshirts" || subCat === "winter";
+      }
 
-    return false;
-  });
-}, [kidsProducts, filter]);
+      return false;
+    });
+  }, [kidsProducts, filter]);
 
+  const girlsProducts = useMemo(() => {
+    return kidsProducts.filter((p) => {
+      const subCat = p.subCategory?.toLowerCase() || "";
 
- const girlsProducts = useMemo(() => {
-  return kidsProducts.filter((p) => {
-    if (filter === "party") return p.subCategory === "Party";
+      // Party filter - show only party items
+      if (filter === "party") {
+        return subCat === "party";
+      }
 
-    if (filter === "girls") return p.subCategory === "Girls";
+      // Girls filter - show only girls
+      if (filter === "girls") {
+        return subCat === "girls";
+      }
 
-    if (filter === "all") return p.subCategory === "Girls";
+      // All filter - show girls + party
+      if (filter === "all") {
+        return subCat === "girls" || subCat === "party";
+      }
 
-    return false;
-  });
-}, [kidsProducts, filter]);
-
+      return false;
+    });
+  }, [kidsProducts, filter]);
 
   // Total count for display
   const totalProducts = boysProducts.length + girlsProducts.length;

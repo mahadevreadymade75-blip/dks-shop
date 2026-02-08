@@ -7,25 +7,19 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "@/types/product";
 
-const CATEGORY_MAP: Record<string, string[]> = {
-  All: [],
-  "Kitchen Tools": ["kitchen", "tool"],
-  Cookware: ["pan", "cooker", "cook"],
-  Storage: ["storage", "box"],
-  "Home Decor": ["decor", "curtain", "clock", "cover"],
-  Cleaning: ["clean", "vacuum", "mop"],
-  "Daily Essentials": ["mat", "bedsheet", "daily"],
-};
-
-const CATEGORY_ICONS: Record<string, string> = {
-  All: "🏠",
-  "Kitchen Tools": "🔪",
-  Cookware: "🍳",
-  Storage: "📦",
-  "Home Decor": "🎨",
-  Cleaning: "🧹",
-  "Daily Essentials": "✨",
-};
+const KITCHEN_FILTERS = [
+  { id: "All", label: "All Products", icon: "🏠" },
+  { id: "Cookware", label: "Cookware", icon: "🍳" },
+  { id: "Dinnerware", label: "Dinnerware", icon: "🍽️" },
+  { id: "Storage", label: "Storage", icon: "📦" },
+  { id: "Appliances", label: "Appliances", icon: "⚡" },
+  { id: "Tools", label: "Tools", icon: "🔪" },
+  { id: "Cutlery", label: "Cutlery", icon: "🥄" },
+  { id: "Containers", label: "Containers", icon: "🫙" },
+  { id: "Utensils", label: "Utensils", icon: "🥢" },
+  { id: "Bakeware", label: "Bakeware", icon: "🧁" },
+  { id: "Glassware", label: "Glassware", icon: "🥤" },
+];
 
 export default function HomeKitchenPage() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -54,9 +48,14 @@ export default function HomeKitchenPage() {
 
       if (activeCategory === "All") return true;
 
-      const keywords = CATEGORY_MAP[activeCategory];
-      const name = p.name.toLowerCase();
-      return keywords.some((k) => name.includes(k));
+      // Check subCategory field
+      if (p.subCategory) {
+        return p.subCategory.toLowerCase() === activeCategory.toLowerCase();
+      }
+
+      // Fallback: check in product name
+      const productName = (p as any).name || "";
+      return productName.toLowerCase().includes(activeCategory.toLowerCase());
     });
   }, [products, activeCategory]);
 
@@ -145,13 +144,13 @@ export default function HomeKitchenPage() {
           {/* Category Pills - Scrollable on Mobile */}
           <div className="overflow-x-auto scrollbar-hide pb-1 -mb-1">
             <div className="flex gap-2 sm:gap-2.5 min-w-max sm:min-w-0 sm:flex-wrap">
-              {Object.keys(CATEGORY_MAP).map((title) => (
+              {KITCHEN_FILTERS.map((filter) => (
                 <CategoryPill
-                  key={title}
-                  title={title}
-                  icon={CATEGORY_ICONS[title]}
-                  active={activeCategory === title}
-                  onClick={() => handleCategoryChange(title)}
+                  key={filter.id}
+                  title={filter.label}
+                  icon={filter.icon}
+                  active={activeCategory === filter.id}
+                  onClick={() => handleCategoryChange(filter.id)}
                 />
               ))}
             </div>
@@ -165,7 +164,8 @@ export default function HomeKitchenPage() {
           <div className="mb-8 sm:mb-10 md:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 flex items-center gap-3">
               <span className="text-3xl sm:text-4xl">
-                {CATEGORY_ICONS[activeCategory]}
+                {KITCHEN_FILTERS.find((f) => f.id === activeCategory)?.icon ||
+                  "🏠"}
               </span>
               <span>
                 {activeCategory === "All" ? "All Products" : activeCategory}

@@ -12,24 +12,35 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 const WOMEN_FILTERS: Record<string, (p: any) => boolean> = {
   All: (p) => p.category === "women",
 
+  // Existing filters...
   Kurti: (p) =>
     p.category === "women" && p.subCategory?.toLowerCase() === "kurti",
-
   Dress: (p) =>
     p.category === "women" && p.subCategory?.toLowerCase() === "dress",
-
   Top: (p) => p.category === "women" && p.subCategory?.toLowerCase() === "tops",
-
   Ethnic: (p) =>
     p.category === "women" && p.subCategory?.toLowerCase() === "ethnic",
-
   Footwear: (p) =>
     p.category === "women" && p.subCategory?.toLowerCase() === "footwear",
-
   Jewellery: (p) =>
     p.category === "women" && p.subCategory?.toLowerCase() === "jewellery",
+
+  // New filters (if needed)
+  Sarees: (p) =>
+    p.category === "women" && p.subCategory?.toLowerCase() === "sarees",
+  Lehenga: (p) =>
+    p.category === "women" && p.subCategory?.toLowerCase() === "lehenga",
+  Salwar: (p) =>
+    p.category === "women" && p.subCategory?.toLowerCase() === "salwar",
+  Western: (p) =>
+    p.category === "women" && p.subCategory?.toLowerCase() === "western",
+  Bags: (p) =>
+    p.category === "women" && p.subCategory?.toLowerCase() === "bags",
+  Accessories: (p) =>
+    p.category === "women" && p.subCategory?.toLowerCase() === "accessories",
 };
 
+// Don't forget to add emojis
 const FILTER_EMOJIS: Record<string, string> = {
   All: "✨",
   Kurti: "👘",
@@ -38,6 +49,12 @@ const FILTER_EMOJIS: Record<string, string> = {
   Ethnic: "🪷",
   Footwear: "👠",
   Jewellery: "💍",
+  Sarees: "🥻",
+  Lehenga: "👘",
+  Salwar: "🧥",
+  Western: "👖",
+  Bags: "👜",
+  Accessories: "🎀",
 };
 
 export default function WomenPage() {

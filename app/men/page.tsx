@@ -9,14 +9,17 @@ import Image from "next/image";
 
 /* ================= FILTER LOGIC ================= */
 
-const MEN_FILTERS: Record<string, string[]> = {
-  All: [],
-  "T-Shirts": ["tshirts"],
-  Shirts: ["shirts"],
-  Jeans: ["jeans"],
-  Watches: ["watches"],
-  Shoes: ["shoes"],
-};
+const MEN_FILTERS = [
+  { id: "All", label: "All Products" },
+  { id: "Tshirts", label: "T-Shirts" },
+  { id: "Shirts", label: "Shirts" },
+  { id: "Jeans", label: "Jeans" },
+  { id: "Trousers", label: "Trousers" },
+  { id: "Jackets", label: "Jackets" },
+  { id: "Casual", label: "Casual" },
+  { id: "Formal", label: "Formal" },
+  { id: "Ethnic", label: "Ethnic" },
+];
 
 export default function MenPage() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -41,7 +44,7 @@ export default function MenPage() {
   /* ================= FILTERED PRODUCTS (OPTIMIZED) ================= */
 
   const menProducts = useMemo(() => {
-    const filtered = allProducts.filter((p) => {
+    return allProducts.filter((p) => {
       // Filter by category
       if (p.category !== "men") return false;
 
@@ -50,9 +53,16 @@ export default function MenPage() {
 
       // Filter by subcategory
       if (activeFilter === "All") return true;
-      return MEN_FILTERS[activeFilter]?.includes(p.subCategory);
+
+      // Check subCategory field (primary)
+      if (p.subCategory) {
+        return p.subCategory.toLowerCase() === activeFilter.toLowerCase();
+      }
+
+      // Fallback: check in product name (safe access)
+      const productName = (p as any).name || "";
+      return productName.toLowerCase().includes(activeFilter.toLowerCase());
     });
-    return filtered;
   }, [activeFilter, priceRange, allProducts]);
 
   // Memoized filter handler
@@ -129,12 +139,12 @@ export default function MenPage() {
           {/* Category Filters - Clean horizontal scroll */}
           <div className="overflow-x-auto scrollbar-hide pb-1 -mb-1">
             <div className="flex gap-2 sm:gap-2.5 min-w-max sm:min-w-0 sm:flex-wrap">
-              {Object.keys(MEN_FILTERS).map((label) => (
+              {MEN_FILTERS.map((filter) => (
                 <FilterBadge
-                  key={label}
-                  label={label}
-                  active={activeFilter === label}
-                  onClick={() => handleFilterChange(label)}
+                  key={filter.id}
+                  label={filter.label}
+                  active={activeFilter === filter.id}
+                  onClick={() => handleFilterChange(filter.id)}
                 />
               ))}
             </div>

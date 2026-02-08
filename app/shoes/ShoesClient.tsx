@@ -11,12 +11,17 @@ import Image from "next/image";
 /* ================= FILTER CONFIG ================= */
 
 const SHOE_FILTERS = [
-  { id: "All", label: "All", emoji: "👟" },
-  { id: "Running", label: "Running", emoji: "🏃" },
+  { id: "All", label: "All Shoes", emoji: "👟" },
   { id: "Casual", label: "Casual", emoji: "👞" },
-  { id: "Sneakers", label: "Sneakers", emoji: "👟" },
   { id: "Formal", label: "Formal", emoji: "👔" },
   { id: "Sports", label: "Sports", emoji: "⚽" },
+  { id: "Running", label: "Running", emoji: "🏃" },
+  { id: "Sneakers", label: "Sneakers", emoji: "👟" },
+  { id: "Loafers", label: "Loafers", emoji: "🥿" },
+  { id: "Boots", label: "Boots", emoji: "🥾" },
+  { id: "Sandals", label: "Sandals", emoji: "🩴" },
+  { id: "Slippers", label: "Slippers", emoji: "🥿" },
+  { id: "Flip-flops", label: "Flip-flops", emoji: "🩴" },
 ];
 
 export default function ShoesClient() {
@@ -55,10 +60,15 @@ export default function ShoesClient() {
     let data = allProducts.filter((p) => p.category === "shoes");
 
     if (activeType !== "All") {
-      const type = activeType.toLowerCase();
-      data = data.filter((p) => p.name.toLowerCase().includes(type));
+      data = data.filter((p) => {
+        // First check subCategory field
+        if (p.subCategory) {
+          return p.subCategory.toLowerCase() === activeType.toLowerCase();
+        }
+        // Fallback: check in product name
+        return p.name.toLowerCase().includes(activeType.toLowerCase());
+      });
     }
-
     data = data.filter((p) => p.price <= priceRange);
 
     if (sort === "low") {

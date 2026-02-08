@@ -9,14 +9,15 @@ import Link from "next/link";
 
 /* ================= FILTER CONFIG ================= */
 
-const WATCH_FILTERS: Record<string, string> = {
-  All: "all",
-  Luxury: "luxury",
-  "Smart Watches": "smart",
-  Analog: "analog",
-  Digital: "digital",
-  Sports: "sports",
-};
+const WATCH_FILTERS = [
+  { id: "All", label: "All Watches" },
+  { id: "Luxury", label: "Luxury" },
+  { id: "Smart", label: "Smart Watches" },
+  { id: "Analog", label: "Analog" },
+  { id: "Digital", label: "Digital" },
+  { id: "Sports", label: "Sports" },
+  { id: "Chronograph", label: "Chronograph" },
+];
 
 export default function WatchesClient() {
   const router = useRouter();
@@ -52,10 +53,19 @@ export default function WatchesClient() {
     let data = allProducts.filter((p) => p.category === "watches");
 
     if (activeType !== "All") {
-      const typeValue = WATCH_FILTERS[activeType];
-      data = data.filter((p) => p.watchType === typeValue);
+      data = data.filter((p) => {
+        // Check watchType field (from your product types)
+        if (p.watchType) {
+          return p.watchType.toLowerCase() === activeType.toLowerCase();
+        }
+        // Fallback: check subCategory field
+        if (p.subCategory) {
+          return p.subCategory.toLowerCase() === activeType.toLowerCase();
+        }
+        // Last fallback: check in product name
+        return p.name.toLowerCase().includes(activeType.toLowerCase());
+      });
     }
-
     data = data.filter((p) => p.price <= priceRange);
 
     if (sort === "low") {
@@ -173,12 +183,12 @@ export default function WatchesClient() {
           {/* Type Filters - Horizontal scroll on mobile */}
           <div className="overflow-x-auto pb-2 -mx-3 px-3 md:mx-0 md:px-0 scrollbar-hide">
             <div className="flex gap-2 md:gap-3 min-w-max md:min-w-0 md:flex-wrap">
-              {Object.keys(WATCH_FILTERS).map((label) => (
+              {WATCH_FILTERS.map((filter) => (
                 <FilterBadge
-                  key={label}
-                  label={label}
-                  active={activeType === label}
-                  onClick={() => handleTypeChange(label)}
+                  key={filter.id}
+                  label={filter.label}
+                  active={activeType === filter.id}
+                  onClick={() => handleTypeChange(filter.id)}
                 />
               ))}
             </div>
