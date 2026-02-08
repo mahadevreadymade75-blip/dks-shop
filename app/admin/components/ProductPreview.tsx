@@ -12,6 +12,15 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = product.images.length > 0 ? product.images : [product.image];
 
+  // ✅ ADDED: Calculate discount
+  const discount =
+    product.originalPrice && product.originalPrice > product.price
+      ? Math.round(
+          ((product.originalPrice - product.price) / product.originalPrice) *
+            100,
+        )
+      : null;
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
@@ -84,6 +93,14 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
                   e.currentTarget.src = "/placeholder.jpg";
                 }}
               />
+
+              {/* ✅ ADDED: Discount badge on image */}
+              {discount && (
+                <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
+                  <div className="text-2xl font-bold">{discount}%</div>
+                  <div className="text-xs font-semibold">OFF</div>
+                </div>
+              )}
 
               {images.length > 1 && (
                 <>
@@ -159,6 +176,12 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
                   {product.subCategory}
                 </span>
               )}
+              {/* ✅ ADDED: Limited Time Deal badge if discount exists */}
+              {discount && (
+                <span className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 text-sm font-bold rounded-lg">
+                  🔥 Limited Time Deal
+                </span>
+              )}
             </div>
 
             {/* Product Name */}
@@ -180,11 +203,33 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-green-600">
-                ₹{product.price.toLocaleString()}
-              </span>
-              <span className="text-gray-500 text-sm">
+            <div>
+              <div className="flex items-baseline gap-3">
+                <span className="text-4xl font-bold text-green-600">
+                  ₹{product.price.toLocaleString()}
+                </span>
+                {/* ✅ ADDED: Original price if discount exists */}
+                {product.originalPrice &&
+                  product.originalPrice > product.price && (
+                    <>
+                      <span className="text-2xl text-gray-500 line-through">
+                        ₹{product.originalPrice.toLocaleString()}
+                      </span>
+                      <span className="text-lg font-bold text-red-600">
+                        ({discount}% OFF)
+                      </span>
+                    </>
+                  )}
+              </div>
+              {/* ✅ ADDED: Savings amount */}
+              {product.originalPrice &&
+                product.originalPrice > product.price && (
+                  <p className="text-green-700 font-semibold mt-2">
+                    You save: ₹
+                    {(product.originalPrice - product.price).toLocaleString()}
+                  </p>
+                )}
+              <span className="text-gray-500 text-sm block mt-1">
                 inclusive of all taxes
               </span>
             </div>
@@ -199,7 +244,7 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
                   {product.sizes.map((size, index) => (
                     <div
                       key={index}
-                      className="px-4 py-2 border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-700"
+                      className="px-4 py-2 border-2 border-gray-300 hover:border-black rounded-lg text-sm font-semibold text-gray-700 hover:text-black transition-colors cursor-pointer"
                     >
                       {size}
                     </div>
@@ -245,6 +290,21 @@ export function ProductPreview({ product, onClose }: ProductPreviewProps) {
                     capitalize
                   />
                 )}
+                {/* ✅ ADDED: Show pricing info */}
+                {product.originalPrice &&
+                  product.originalPrice > product.price && (
+                    <>
+                      <InfoRow
+                        label="Original Price"
+                        value={`₹${product.originalPrice.toLocaleString()}`}
+                      />
+                      <InfoRow label="Discount" value={`${discount}% OFF`} />
+                      <InfoRow
+                        label="You Save"
+                        value={`₹${(product.originalPrice - product.price).toLocaleString()}`}
+                      />
+                    </>
+                  )}
                 <InfoRow label="Average Rating" value={`${product.rating}/5`} />
                 <InfoRow
                   label="Total Reviews"

@@ -9,8 +9,10 @@ import { Sidebar } from "./components/Sidebar";
 
 export interface Product {
   id: number;
+  ID: string; // ✅ ADDED (from AddProduct form)
   name: string;
   price: number;
+  originalPrice?: number; // ✅ ADDED
   category: string;
   subCategory?: string;
   description: string;
@@ -108,8 +110,10 @@ export default function AdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: updatedProduct.id,
+        ID: updatedProduct.ID, // ✅ ADDED
         name: updatedProduct.name,
         price: updatedProduct.price,
+        originalPrice: updatedProduct.originalPrice, // ✅ ADDED
         category: updatedProduct.category,
         subCategory: updatedProduct.subCategory,
         description: updatedProduct.description,

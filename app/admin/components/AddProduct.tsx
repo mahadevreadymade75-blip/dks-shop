@@ -13,6 +13,7 @@ export function AddProduct({ onAdd, onCancel }: AddProductProps) {
     ID: "",
     name: "",
     price: 0,
+    originalPrice: 0, // ✅ ADDED
     category: "",
     subCategory: "",
     description: "",
@@ -109,6 +110,13 @@ export function AddProduct({ onAdd, onCancel }: AddProductProps) {
     if (!formData.ID.trim()) newErrors.ID = "Product ID is required";
     if (!formData.name.trim()) newErrors.name = "Product name is required";
     if (formData.price <= 0) newErrors.price = "Price must be greater than 0";
+
+    // ✅ ADDED VALIDATION: Original price should be >= current price if provided
+    if (formData.originalPrice > 0 && formData.originalPrice < formData.price) {
+      newErrors.originalPrice =
+        "Original price must be greater than or equal to current price";
+    }
+
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
@@ -128,6 +136,9 @@ export function AddProduct({ onAdd, onCancel }: AddProductProps) {
     if (validateForm()) {
       const productData = {
         ...formData,
+        // ✅ ADDED: Only include originalPrice if it's greater than 0
+        originalPrice:
+          formData.originalPrice > 0 ? formData.originalPrice : undefined,
         images: formData.images.filter((img) => img.trim() !== ""),
         subCategory: formData.subCategory?.trim()
           ? formData.subCategory.trim()
@@ -156,6 +167,15 @@ export function AddProduct({ onAdd, onCancel }: AddProductProps) {
     const newImages = formData.images.filter((_, i) => i !== index);
     setFormData({ ...formData, images: newImages });
   };
+
+  // ✅ ADDED: Calculate discount percentage
+  const discountPercentage =
+    formData.originalPrice > 0 && formData.price > 0
+      ? Math.round(
+          ((formData.originalPrice - formData.price) / formData.originalPrice) *
+            100,
+        )
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -205,8 +225,24 @@ export function AddProduct({ onAdd, onCancel }: AddProductProps) {
                 error={errors.name}
               />
 
+              {/* ✅ ADDED: Original Price Input */}
               <FormInput
-                label="Price (₹)"
+                label="Original Price (₹)"
+                type="number"
+                value={formData.originalPrice}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    originalPrice: Number(e.target.value),
+                  })
+                }
+                placeholder="Leave 0 if no discount"
+                min="0"
+                error={errors.originalPrice}
+              />
+
+              <FormInput
+                label="Current Price (₹)"
                 required
                 type="number"
                 value={formData.price}
@@ -217,6 +253,26 @@ export function AddProduct({ onAdd, onCancel }: AddProductProps) {
                 min="0"
                 error={errors.price}
               />
+
+              {/* ✅ ADDED: Discount Preview */}
+              {discountPercentage > 0 && (
+                <div className="md:col-span-2 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">🎉</div>
+                    <div>
+                      <p className="text-sm font-semibold text-green-900">
+                        Discount Applied: {discountPercentage}% OFF
+                      </p>
+                      <p className="text-xs text-green-700">
+                        Customer saves ₹
+                        {(
+                          formData.originalPrice - formData.price
+                        ).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -25,6 +25,16 @@ export function ProductList({
   onDelete,
   onPreview,
 }: ProductListProps) {
+  // ✅ ADDED: Helper function to calculate discount
+  const getDiscount = (product: Product) => {
+    if (!product.originalPrice || product.originalPrice <= product.price) {
+      return null;
+    }
+    return Math.round(
+      ((product.originalPrice - product.price) / product.originalPrice) * 100,
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -112,87 +122,105 @@ export function ProductList({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = "/placeholder.jpg";
-                          }}
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-semibold text-gray-900 line-clamp-1">
-                          {product.name}
+              {products.map((product) => {
+                const discount = getDiscount(product); // ✅ ADDED
+                return (
+                  <tr
+                    key={product.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 relative">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/placeholder.jpg";
+                            }}
+                          />
+                          {/* ✅ ADDED: Discount badge on image */}
+                          {discount && (
+                            <div className="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-bl-lg">
+                              {discount}%
+                            </div>
+                          )}
                         </div>
-                        <div className="text-xs text-gray-500 line-clamp-1 mt-1">
-                          {product.description}
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-semibold text-gray-900 line-clamp-1">
+                            {product.name}
+                          </div>
+                          <div className="text-xs text-gray-500 line-clamp-1 mt-1">
+                            {product.description}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm font-bold text-gray-900">
-                      ₹{product.price.toLocaleString()}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full capitalize">
-                      {product.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1 text-sm">
-                      <span className="text-yellow-500">⭐</span>
-                      <span className="font-semibold text-gray-900">
-                        {product.rating}
+                    </td>
+                    <td className="px-6 py-4">
+                      {/* ✅ ADDED: Show original price if discount exists */}
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-bold text-gray-900">
+                          ₹{product.price.toLocaleString()}
+                        </span>
+                        {product.originalPrice &&
+                          product.originalPrice > product.price && (
+                            <span className="text-xs text-gray-500 line-through">
+                              ₹{product.originalPrice.toLocaleString()}
+                            </span>
+                          )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full capitalize">
+                        {product.category}
                       </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">
-                      {product.reviews.toLocaleString()}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => onPreview(product)}
-                        className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors"
-                        title="Preview"
-                      >
-                        👁️
-                      </button>
-                      <button
-                        onClick={() => onEdit(product)}
-                        className="px-3 py-1.5 bg-black hover:bg-gray-800 text-white rounded-lg text-xs font-medium transition-colors"
-                        title="Edit"
-                      >
-                        ✏️
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (confirm(`Delete "${product.name}"?`)) {
-                            onDelete(product.id);
-                          }
-                        }}
-                        className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-medium transition-colors"
-                        title="Delete"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-1 text-sm">
+                        <span className="text-yellow-500">⭐</span>
+                        <span className="font-semibold text-gray-900">
+                          {product.rating}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-sm text-gray-600">
+                        {product.reviews.toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => onPreview(product)}
+                          className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors"
+                          title="Preview"
+                        >
+                          👁️
+                        </button>
+                        <button
+                          onClick={() => onEdit(product)}
+                          className="px-3 py-1.5 bg-black hover:bg-gray-800 text-white rounded-lg text-xs font-medium transition-colors"
+                          title="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Delete "${product.name}"?`)) {
+                              onDelete(product.id);
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-medium transition-colors"
+                          title="Delete"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -200,70 +228,95 @@ export function ProductList({
 
       {/* Mobile Card View */}
       <div className="lg:hidden space-y-4">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm"
-          >
-            <div className="flex gap-4">
-              <div className="h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = "/placeholder.jpg";
-                  }}
-                />
+        {products.map((product) => {
+          const discount = getDiscount(product); // ✅ ADDED
+          return (
+            <div
+              key={product.id}
+              className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm"
+            >
+              <div className="flex gap-4">
+                <div className="h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 relative">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.jpg";
+                    }}
+                  />
+                  {/* ✅ ADDED: Discount badge on image */}
+                  {discount && (
+                    <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
+                      {discount}%
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-bold text-gray-900 line-clamp-1">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                    {product.description}
+                  </p>
+                  {/* ✅ ADDED: Show original price and discount */}
+                  <div className="flex items-center gap-3 mt-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-gray-900">
+                        ₹{product.price.toLocaleString()}
+                      </span>
+                      {product.originalPrice &&
+                        product.originalPrice > product.price && (
+                          <>
+                            <span className="text-xs text-gray-500 line-through">
+                              ₹{product.originalPrice.toLocaleString()}
+                            </span>
+                            <span className="text-xs font-semibold text-green-600">
+                              {discount}% OFF
+                            </span>
+                          </>
+                        )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 text-sm">
+                    <span className="text-yellow-500">⭐ {product.rating}</span>
+                    <span className="text-gray-500">{product.reviews}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-gray-900 line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                  {product.description}
-                </p>
-                <div className="flex items-center gap-3 mt-2 text-sm">
-                  <span className="font-bold text-gray-900">
-                    ₹{product.price.toLocaleString()}
-                  </span>
-                  <span className="text-yellow-500">⭐ {product.rating}</span>
-                  <span className="text-gray-500">{product.reviews}</span>
+
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                <span className="inline-flex px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full capitalize">
+                  {product.category}
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onPreview(product)}
+                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors"
+                  >
+                    👁️ View
+                  </button>
+                  <button
+                    onClick={() => onEdit(product)}
+                    className="px-3 py-1.5 bg-black hover:bg-gray-800 text-white rounded-lg text-xs font-medium transition-colors"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Delete "${product.name}"?`)) {
+                        onDelete(product.id);
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-medium transition-colors"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-              <span className="inline-flex px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full capitalize">
-                {product.category}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => onPreview(product)}
-                  className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors"
-                >
-                  👁️ View
-                </button>
-                <button
-                  onClick={() => onEdit(product)}
-                  className="px-3 py-1.5 bg-black hover:bg-gray-800 text-white rounded-lg text-xs font-medium transition-colors"
-                >
-                  ✏️ Edit
-                </button>
-                <button
-                  onClick={() => {
-                    if (confirm(`Delete "${product.name}"?`)) {
-                      onDelete(product.id);
-                    }
-                  }}
-                  className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-medium transition-colors"
-                >
-                  🗑️
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Empty State */}
