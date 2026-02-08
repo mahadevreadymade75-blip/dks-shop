@@ -524,28 +524,6 @@ export default function ProductDetailPage() {
                 </span>
               </button>
             </div>
-
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
-              <div className="text-center">
-                <div className="text-2xl mb-1">🚚</div>
-                <p className="text-xs font-semibold text-gray-600">
-                  Free Shipping
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl mb-1">✅</div>
-                <p className="text-xs font-semibold text-gray-600">
-                  Verified Product
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl mb-1">💯</div>
-                <p className="text-xs font-semibold text-gray-600">
-                  100% Original
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
