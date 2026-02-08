@@ -4,6 +4,7 @@ export interface ProductDoc extends Document {
   id: number;
   name: string;
   price: number;
+  originalPrice?: number; // ✅ ADDED
   category: string;
   subCategory?: string;
   description: string;
@@ -19,6 +20,7 @@ const ProductSchema = new Schema<ProductDoc>(
     id: { type: Number, required: true, unique: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
+    originalPrice: { type: Number, required: false }, // ✅ ADDED
     category: { type: String, required: true },
     subCategory: { type: String },
     description: { type: String, required: true },

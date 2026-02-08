@@ -76,12 +76,24 @@ const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
       if (existing) {
         return state.map((i) =>
           i.id === action.payload.id && i.size === action.payload.size
-            ? { ...i, qty: i.qty + 1 }
+            ? {
+                ...i,
+                qty: i.qty + (action.payload.qty || 1), // ✅ Use payload qty if provided
+                // ✅ Preserve or update originalPrice if it exists
+                originalPrice: action.payload.originalPrice ?? i.originalPrice,
+              }
             : i,
         );
       }
 
-      return [...state, { ...action.payload, qty: 1 }];
+      // ✅ When adding new item, use qty from payload or default to 1
+      return [
+        ...state,
+        {
+          ...action.payload,
+          qty: action.payload.qty || 1,
+        },
+      ];
     }
 
     case "INCREASE_QTY":

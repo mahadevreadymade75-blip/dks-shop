@@ -38,7 +38,8 @@ export async function PUT(
     await connectDb();
 
     const update: Record<string, unknown> = {};
-    const allowed = ["name", "price", "category", "subCategory", "description", "image", "images", "sizes", "rating", "reviews"];
+    // ✅ ADDED "originalPrice" to allowed fields
+    const allowed = ["name", "price", "originalPrice", "category", "subCategory", "description", "image", "images", "sizes", "rating", "reviews"];
     for (const key of allowed) {
       if (body[key] !== undefined) {
         if (key === "images" && Array.isArray(body.images)) {

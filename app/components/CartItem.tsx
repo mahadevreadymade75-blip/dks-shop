@@ -30,11 +30,18 @@ function CartItem({ item }: Props) {
     return "/placeholder.jpg";
   }, [item]);
 
-  // Memoized total price calculation
-  const totalPrice = useMemo(
-    () => item.qty * item.price,
-    [item.qty, item.price],
-  );
+  // ✅ Memoized total price and savings calculation
+  const { totalPrice, itemSavings, itemOriginalTotal } = useMemo(() => {
+    const totalPrice = item.qty * item.price;
+    const itemSavings = item.originalPrice
+      ? item.qty * (item.originalPrice - item.price)
+      : 0;
+    const itemOriginalTotal = item.originalPrice
+      ? item.qty * item.originalPrice
+      : totalPrice;
+
+    return { totalPrice, itemSavings, itemOriginalTotal };
+  }, [item.qty, item.price, item.originalPrice]);
 
   // Memoized callbacks for performance
   const handleDecrease = useCallback(() => {
@@ -79,15 +86,45 @@ function CartItem({ item }: Props) {
               </span>
             )}
 
-            <p className="text-sm text-gray-600 mt-1.5">
-              ₹{item.price.toLocaleString()} each
-            </p>
-
-            {/* MOBILE: Total Price */}
-            <div className="sm:hidden mt-2">
-              <p className="text-lg font-bold text-gray-900">
-                ₹{totalPrice.toLocaleString()}
+            {/* ✅ PRICE WITH ORIGINAL PRICE */}
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+              <p className="text-sm font-semibold text-gray-900">
+                ₹{item.price.toLocaleString()} each
               </p>
+
+              {item.originalPrice && (
+                <>
+                  <p className="text-xs text-gray-400 line-through">
+                    ₹{item.originalPrice.toLocaleString()}
+                  </p>
+                  <span className="text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                    {Math.round(
+                      ((item.originalPrice - item.price) / item.originalPrice) *
+                        100,
+                    )}
+                    % off
+                  </span>
+                </>
+              )}
+            </div>
+
+            {/* MOBILE: Total Price & Savings */}
+            <div className="sm:hidden mt-2">
+              <div className="flex items-baseline gap-2">
+                <p className="text-lg font-bold text-gray-900">
+                  ₹{totalPrice.toLocaleString()}
+                </p>
+                {item.originalPrice && (
+                  <p className="text-sm text-gray-400 line-through">
+                    ₹{itemOriginalTotal.toLocaleString()}
+                  </p>
+                )}
+              </div>
+              {itemSavings > 0 && (
+                <p className="text-xs text-green-600 font-medium">
+                  Saving ₹{itemSavings.toLocaleString()} on this item
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -127,14 +164,29 @@ function CartItem({ item }: Props) {
         </div>
 
         {/* RIGHT - Desktop Price & Remove */}
-        <div className="hidden sm:flex items-center gap-6">
-          <div className="text-lg font-bold text-gray-900 min-w-[100px] text-right">
-            ₹{totalPrice.toLocaleString()}
+        <div className="hidden sm:flex flex-col items-end gap-2">
+          {/* ✅ DESKTOP PRICE WITH SAVINGS */}
+          <div className="flex items-baseline gap-2">
+            <div className="text-lg font-bold text-gray-900">
+              ₹{totalPrice.toLocaleString()}
+            </div>
+            {item.originalPrice && (
+              <div className="text-sm text-gray-400 line-through">
+                ₹{itemOriginalTotal.toLocaleString()}
+              </div>
+            )}
           </div>
+
+          {/* ✅ SAVINGS TEXT */}
+          {itemSavings > 0 && (
+            <p className="text-xs text-green-600 font-medium">
+              Save ₹{itemSavings.toLocaleString()}
+            </p>
+          )}
 
           <button
             onClick={handleRemove}
-            className="text-red-600 hover:text-red-700 font-medium text-sm"
+            className="text-red-600 hover:text-red-700 font-medium text-sm mt-1"
             aria-label="Remove item"
           >
             Remove
@@ -147,11 +199,12 @@ function CartItem({ item }: Props) {
 
 // Export memoized version for performance
 export default memo(CartItem, (prevProps, nextProps) => {
-  // Custom comparison for better performance
+  // ✅ Updated comparison to include originalPrice
   return (
     prevProps.item.id === nextProps.item.id &&
     prevProps.item.qty === nextProps.item.qty &&
     prevProps.item.size === nextProps.item.size &&
-    prevProps.item.price === nextProps.item.price
+    prevProps.item.price === nextProps.item.price &&
+    prevProps.item.originalPrice === nextProps.item.originalPrice
   );
 });

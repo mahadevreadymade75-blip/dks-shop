@@ -29,6 +29,9 @@ export async function POST(req: Request) {
       id: Number(body.id),
       name: String(body.name),
       price: Number(body.price),
+      originalPrice: body.originalPrice !== undefined && body.originalPrice !== null // ✅ ADDED
+        ? Number(body.originalPrice)
+        : undefined,
       category: String(body.category),
       subCategory: body.subCategory !== undefined && body.subCategory !== null && String(body.subCategory).trim() !== ""
         ? String(body.subCategory)

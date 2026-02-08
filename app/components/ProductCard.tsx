@@ -27,6 +27,13 @@ export default function ProductCard({ product }: Props) {
 
   const imageSrc = images[0] || "/placeholder.jpg";
 
+  /* ================= DISCOUNT CALCULATION ================= */
+  const discountPercent = product.originalPrice
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100,
+      )
+    : 0;
+
   return (
     <div
       className="
@@ -74,6 +81,15 @@ export default function ProductCard({ product }: Props) {
 
           {/* Gradient Overlay on Hover */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          {/* ✅ DISCOUNT BADGE (TOP RIGHT) */}
+          {discountPercent > 0 && (
+            <div className="absolute top-3 right-3 z-10">
+              <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                {discountPercent}% OFF
+              </div>
+            </div>
+          )}
         </div>
       </Link>
 
@@ -97,11 +113,22 @@ export default function ProductCard({ product }: Props) {
           </h3>
         </Link>
 
-        {/* Price */}
-        <div className="flex items-center gap-2">
-          <p className="text-gray-900 text-lg font-bold">
+        {/* ✅ PRICE WITH ORIGINAL PRICE (STRIKETHROUGH) */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="text-gray-900 text-xl font-bold">
             ₹{product.price.toLocaleString()}
           </p>
+
+          {product.originalPrice && (
+            <>
+              <p className="text-gray-400 text-sm line-through">
+                ₹{product.originalPrice.toLocaleString()}
+              </p>
+              <span className="text-green-600 text-xs font-semibold bg-green-50 px-2 py-0.5 rounded-full">
+                Save ₹{(product.originalPrice - product.price).toLocaleString()}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Description */}

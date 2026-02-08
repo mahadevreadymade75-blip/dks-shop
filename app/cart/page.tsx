@@ -9,13 +9,28 @@ export default function CartPage() {
   const { cart, totalItems, totalPrice, isEmpty, clearCart } = useCart();
 
   /* ================= CALCULATIONS ================= */
-  const { subtotal, shipping, total } = useMemo(() => {
-    const subtotal = totalPrice;
-    const shipping = subtotal > 1000 ? 0 : 50; // Free shipping above ₹1000
-    const total = subtotal + shipping;
+  const { subtotal, shipping, total, totalSavings, originalTotal } =
+    useMemo(() => {
+      const subtotal = totalPrice;
+      const shipping = subtotal > 1000 ? 0 : 50; // Free shipping above ₹1000
+      const total = subtotal + shipping;
 
-    return { subtotal, shipping, total };
-  }, [totalPrice]);
+      // ✅ Calculate total savings
+      const totalSavings = cart.reduce((sum, item) => {
+        if (item.originalPrice) {
+          return sum + (item.originalPrice - item.price) * item.qty;
+        }
+        return sum;
+      }, 0);
+
+      // ✅ Calculate what the total would have been without discounts
+      const originalTotal = cart.reduce((sum, item) => {
+        const itemOriginalPrice = item.originalPrice || item.price;
+        return sum + itemOriginalPrice * item.qty;
+      }, 0);
+
+      return { subtotal, shipping, total, totalSavings, originalTotal };
+    }, [totalPrice, cart]);
 
   /* ================= EMPTY CART ================= */
   if (isEmpty) {
@@ -52,6 +67,15 @@ export default function CartPage() {
             <p className="text-gray-600 mt-1">
               {totalItems} {totalItems === 1 ? "item" : "items"}
             </p>
+
+            {/* ✅ Savings Badge */}
+            {totalSavings > 0 && (
+              <div className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full">
+                <span className="text-green-600 font-bold text-sm">
+                  🎉 You're saving ₹{totalSavings.toLocaleString()}!
+                </span>
+              </div>
+            )}
           </div>
 
           <button
@@ -85,6 +109,24 @@ export default function CartPage() {
 
               {/* Price Breakdown */}
               <div className="space-y-3 text-sm mb-4 pb-4 border-b">
+                {/* ✅ Original Price (if there are savings) */}
+                {totalSavings > 0 && (
+                  <div className="flex justify-between text-gray-400">
+                    <span className="line-through">Original Price</span>
+                    <span className="line-through">
+                      ₹{originalTotal.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                {/* ✅ Discount/Savings */}
+                {totalSavings > 0 && (
+                  <div className="flex justify-between text-green-600 font-semibold">
+                    <span>Discount</span>
+                    <span>- ₹{totalSavings.toLocaleString()}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
                   <span className="font-semibold text-gray-900">
@@ -119,6 +161,27 @@ export default function CartPage() {
                   ₹{total.toLocaleString()}
                 </span>
               </div>
+
+              {/* ✅ Total Savings Summary */}
+              {totalSavings > 0 && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-green-700 font-medium">
+                        Total Savings
+                      </p>
+                      <p className="text-2xl font-bold text-green-600">
+                        ₹{totalSavings.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="text-4xl">🎉</div>
+                  </div>
+                  <p className="text-xs text-green-600 mt-2">
+                    {Math.round((totalSavings / originalTotal) * 100)}% off on
+                    your order
+                  </p>
+                </div>
+              )}
 
               {/* ================= ACTION BUTTONS ================= */}
               <div className="space-y-3">
