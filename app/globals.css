@@ -1,14 +1,31 @@
-/* ======================================================================
-   ULTRA PERFORMANCE OPTIMIZATIONS
-====================================================================== */
+@import "tailwindcss";
 
-/* Hardware Acceleration */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html,
+body {
+  min-height: 100%;
 }
 
-/* Scrollbar Hide */
+/* PERMANENT DARK UI */
+body {
+  background-color: dark-black;
+  color: white;
+}
+
+/* auto scroll animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 35s linear infinite;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -18,70 +35,25 @@
   scrollbar-width: none;
 }
 
-/* Smooth Scroll */
-.scroll-smooth {
-  scroll-behavior: smooth;
+/* Performance Optimizations */
+
+/* Hide scrollbar for featured products slider */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
-/* GPU Acceleration for transforms */
-.will-change-transform {
-  will-change: transform;
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerate {
   transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
+  will-change: transform;
 }
 
-/* Optimize images */
+/* Optimize image rendering */
 img {
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
-
-/* Fast Fade In Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Prevent layout shift */
-.prevent-shift {
-  content-visibility: auto;
-  contain: layout style paint;
-}
-
-/* Remove all motion for users who prefer reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Touch optimization */
-@media (hover: none) and (pointer: coarse) {
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-/* Force GPU rendering for heavy elements */
-.gpu-boost {
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-}
-
-/* Optimize font loading */
-@font-face {
-  font-display: swap;
 }
