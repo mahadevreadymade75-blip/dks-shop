@@ -20,16 +20,19 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [customersAlsoBought, setCustomersAlsoBought] = useState<Product[]>([]);
 
   useEffect(() => {
     let mounted = true;
+    setIsLoading(true);
     void getProducts().then((data) => {
       if (!mounted) return;
       const items = data ?? [];
       setAllProducts(items);
+      setIsLoading(false);
     });
     return () => {
       mounted = false;
@@ -76,6 +79,19 @@ export default function ProductDetailPage() {
     return { discount, discountPercent };
   }, [product]);
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 gap-4">
+        <div className="w-16 h-16 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+        <p className="text-lg font-semibold text-gray-600">
+          Loading product...
+        </p>
+      </div>
+    );
+  }
+
+  // Show not found only after loading is complete
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-gray-600 bg-gray-50 gap-4">
