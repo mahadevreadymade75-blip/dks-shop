@@ -25,9 +25,20 @@ interface BaseProduct {
 
 export interface MenProduct extends BaseProduct {
     category: "men";
-    subCategory: "tshirts" | "shirts" | "jeans";
+    subCategory: 
+        | "Tshirts" 
+        | "Shirts" 
+        | "Jeans"
+        | "Trousers"
+        | "Jackets"
+        | "Suits"
+        | "Shorts"
+        | "Casual"
+        | "Formal"
+        | "Ethnic"
+        | "Activewear";
 
-    material?: "Cotton" | "Denim" | "Linen" | "Polyester";
+    material?: "Cotton" | "Denim" | "Linen" | "Polyester" | "Silk" | "Wool" | string;
 }
 
 /* ================= WOMEN ================= */
@@ -35,14 +46,23 @@ export interface MenProduct extends BaseProduct {
 export interface WomenProduct extends BaseProduct {
     category: "women";
     subCategory:
-        | "jewellery"
-        | "ethnic"
-        | "tops"
-        | "kurti"
+        | "Jewellery"
+        | "Ethnic"
+        | "Tops"
+        | "Kurti"
         | "Footwear"
-        | "Dress";
+        | "Dress"
+        | "Sarees"
+        | "Lehenga"
+        | "Salwar"
+        | "Western"
+        | "Casual"
+        | "Formal"
+        | "Party"
+        | "Bags"
+        | "Accessories";
 
-    jewelleryType?: "choker" | "necklace" | "earrings" | "bangles";
+    jewelleryType?: "Choker" | "Necklace" | "Earrings" | "Bangles" | "Rings" | "Bracelet";
 
     material?: string;
     stones?: string[];
@@ -52,18 +72,30 @@ export interface WomenProduct extends BaseProduct {
 
 export interface WatchProduct extends BaseProduct {
     category: "watches";
+    subCategory?: "Men" | "Women" | "Kids" | "Unisex";
 
-    watchType: "luxury" | "analog" | "sports" | "smart";
+    watchType: "Luxury" | "Analog" | "Sports" | "Smart" | "Digital" | "Chronograph";
 
-    material?: "Steel" | "Leather" | "Silicone" | "Ceramic";
+    material?: "Steel" | "Leather" | "Silicone" | "Ceramic" | "Gold" | "Silver" | string;
 }
 
 /* ================= SHOES / SANDALS ================= */
 
 export interface ShoeProduct extends BaseProduct {
     category: "shoes" | "sandals";
+    subCategory?: 
+        | "Casual" 
+        | "Formal" 
+        | "Sports" 
+        | "Running"
+        | "Sneakers" 
+        | "Loafers" 
+        | "Boots"
+        | "Sandals"
+        | "Slippers"
+        | "Flip-flops";
 
-    material?: "Leather" | "Synthetic" | "Canvas" | "Rubber";
+    material?: "Leather" | "Synthetic" | "Canvas" | "Rubber" | "Mesh" | string;
 }
 
 /* ================= KIDS ================= */
@@ -72,11 +104,17 @@ export interface KidsProduct extends BaseProduct {
     category: "kids";
 
     subCategory:
-        | "boys"
-        | "girls"
-        | "tshirts"
-        | "winter"
-        | "party";
+        | "Boys"
+        | "Girls"
+        | "Tshirts"
+        | "Winter"
+        | "Party"
+        | "Ethnic"
+        | "Casual"
+        | "Formal"
+        | "Footwear"
+        | "Accessories"
+        | "Toys";
 
     material?: 
         | "Cotton"
@@ -91,13 +129,18 @@ export interface KitchenProduct extends BaseProduct {
     category: "kitchen";
 
     subCategory:
-        | "cookware"
-        | "dinnerware"
-        | "storage"
-        | "appliances"
-        | "tools";
+        | "Cookware"
+        | "Dinnerware"
+        | "Storage"
+        | "Appliances"
+        | "Tools"
+        | "Cutlery"
+        | "Containers"
+        | "Utensils"
+        | "Bakeware"
+        | "Glassware";
 
-    material?: "Steel" | "Plastic" | "Glass" | "Ceramic";
+    material?: "Steel" | "Plastic" | "Glass" | "Ceramic" | "Aluminum" | "Wood" | string;
 }
 
 /* ================= FINAL PRODUCT TYPE ================= */
