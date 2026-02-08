@@ -350,15 +350,125 @@ export default function ProductDetailPage() {
               </p>
             </div>
 
-            {/* Description */}
+            {/* Description / Key Features */}
             <div className="bg-white border border-gray-200 rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">
-                Description
+              <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">
+                Key Features
               </h3>
-              <p className="text-gray-700 leading-relaxed">
-                {product.description ||
-                  "Premium quality product with excellent craftsmanship. Perfect for everyday use and special occasions. Made with high-quality materials to ensure long-lasting durability and comfort."}
-              </p>
+
+              {product.description ? (
+                <div className="space-y-3">
+                  {product.description
+                    .split(".")
+                    .filter((line) => line.trim())
+                    .map((feature, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                          <svg
+                            className="w-3 h-3 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed flex-1">
+                          {feature.trim()}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                      <svg
+                        className="w-3 h-3 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">
+                      Premium quality product with excellent craftsmanship
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                      <svg
+                        className="w-3 h-3 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">
+                      Perfect for everyday use and special occasions
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                      <svg
+                        className="w-3 h-3 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">
+                      Made with high-quality materials for long-lasting
+                      durability
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mt-0.5">
+                      <svg
+                        className="w-3 h-3 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">
+                      Designed for maximum comfort and style
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Size Selection */}
@@ -413,6 +523,28 @@ export default function ProductDetailPage() {
                   💬 Order on WhatsApp
                 </span>
               </button>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+              <div className="text-center">
+                <div className="text-2xl mb-1">🚚</div>
+                <p className="text-xs font-semibold text-gray-600">
+                  Free Shipping
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl mb-1">✅</div>
+                <p className="text-xs font-semibold text-gray-600">
+                  Verified Product
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl mb-1">💯</div>
+                <p className="text-xs font-semibold text-gray-600">
+                  100% Original
+                </p>
+              </div>
             </div>
           </div>
         </div>
