@@ -8,7 +8,7 @@ import type { Product } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 
 /* ======================================================================
-   HERO SLIDES DATA (ADS STYLE)
+   HERO SLIDES DATA
 ====================================================================== */
 
 const heroSlides = [
@@ -94,18 +94,20 @@ export default function HomePage() {
     return mixed.slice(0, 20);
   }, [allProducts]);
 
-  /* ================= ULTRA-OPTIMIZED AUTO SCROLL ================= */
+  /* ================= PERFECT AUTO SCROLL WITH USER CONTROL ================= */
   useEffect(() => {
     const el = sliderRef.current;
     if (!el || featuredProducts.length === 0) return;
 
     let rafId: number;
     const speed = 0.5;
+    let userScrollTimeout: NodeJS.Timeout;
 
     const scroll = () => {
       if (!isScrollingRef.current && el) {
         scrollVelocityRef.current += speed;
 
+        // Loop back to start when reaching end
         if (scrollVelocityRef.current >= el.scrollWidth - el.clientWidth) {
           scrollVelocityRef.current = 0;
         }
@@ -115,28 +117,48 @@ export default function HomePage() {
       rafId = requestAnimationFrame(scroll);
     };
 
-    const handleInteractionStart = () => {
+    // User starts scrolling/touching
+    const handleUserScrollStart = () => {
       isScrollingRef.current = true;
+      clearTimeout(userScrollTimeout);
     };
 
-    const handleInteractionEnd = () => {
-      if (el) {
-        scrollVelocityRef.current = el.scrollLeft;
+    // User stops scrolling - resume auto-scroll after 2 seconds
+    const handleUserScrollEnd = () => {
+      clearTimeout(userScrollTimeout);
+      userScrollTimeout = setTimeout(() => {
+        if (el) {
+          scrollVelocityRef.current = el.scrollLeft;
+          isScrollingRef.current = false;
+        }
+      }, 2000); // Resume after 2 seconds of no interaction
+    };
+
+    // Listen to scroll event for manual scrolling
+    const handleScroll = () => {
+      if (!isScrollingRef.current) {
+        handleUserScrollStart();
       }
-      isScrollingRef.current = false;
+      handleUserScrollEnd();
     };
 
-    el.addEventListener("pointerdown", handleInteractionStart);
-    el.addEventListener("pointerup", handleInteractionEnd);
-    el.addEventListener("pointerleave", handleInteractionEnd);
+    // Mouse/Touch events
+    el.addEventListener("mousedown", handleUserScrollStart);
+    el.addEventListener("touchstart", handleUserScrollStart, { passive: true });
+    el.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Mouse leave - resume auto scroll after delay
+    el.addEventListener("mouseleave", handleUserScrollEnd);
 
     rafId = requestAnimationFrame(scroll);
 
     return () => {
       cancelAnimationFrame(rafId);
-      el.removeEventListener("pointerdown", handleInteractionStart);
-      el.removeEventListener("pointerup", handleInteractionEnd);
-      el.removeEventListener("pointerleave", handleInteractionEnd);
+      clearTimeout(userScrollTimeout);
+      el.removeEventListener("mousedown", handleUserScrollStart);
+      el.removeEventListener("touchstart", handleUserScrollStart);
+      el.removeEventListener("scroll", handleScroll);
+      el.removeEventListener("mouseleave", handleUserScrollEnd);
     };
   }, [featuredProducts.length]);
 
@@ -144,10 +166,10 @@ export default function HomePage() {
   return (
     <main className="bg-gradient-to-b from-gray-50 via-white to-blue-50/30 text-gray-900">
       {/* ======================================================
-         HERO SECTION - OPTIMIZED IMAGE SIZING
+         HERO SECTION
       ====================================================== */}
-      <section className="relative h-[55vh] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-gray-100 to-blue-50 pt-16 md:pt-20 lg:pt-24">
-        {/* Background Image - Properly Sized */}
+      <section className="relative h-[55vh] sm:h-[65vh] md:h-75vh] lg:h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-gray-100 to-blue-50 pt-16 md:pt-20 lg:pt-24">
+        {/* Background Image */}
         <Link href={slide.link} className="absolute inset-0">
           {!imageLoaded[currentSlide] && (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-blue-100 animate-pulse" />
@@ -170,16 +192,16 @@ export default function HomePage() {
           />
         </Link>
 
-        {/* Enhanced Gradient Overlay */}
+        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-transparent" />
 
-        {/* Hero Content - Left aligned for desktop, centered for mobile */}
+        {/* Hero Content */}
         <div
           key={currentSlide}
           className="relative z-10 w-full max-w-7xl px-4 sm:px-6 md:px-10 lg:px-16 mx-auto animate-fadeIn"
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
-            {/* Left Side - Product Info */}
+            {/* Left Side */}
             <div className="text-center md:text-left">
               <div className="inline-block mb-3 sm:mb-4 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200 shadow-sm">
                 <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -212,7 +234,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Side - Welcome Message (All screens) */}
+            {/* Right Side - Welcome */}
             <div className="text-center md:text-right">
               <div className="bg-white/95 backdrop-blur-sm rounded-2xl md:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-2xl border border-gray-200 max-w-md mx-auto md:ml-auto md:mr-0">
                 <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-gray-900 mb-2 sm:mb-3">
@@ -262,7 +284,7 @@ export default function HomePage() {
       </section>
 
       {/* ======================================================
-         CATEGORIES - Premium Light Design
+         CATEGORIES
       ====================================================== */}
       <section className="py-16 sm:py-20 md:py-24 bg-white relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -313,12 +335,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       {/* ======================================================
-         FEATURED PRODUCTS - Clean & Fast
+         FEATURED PRODUCTS
       ====================================================== */}
       <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          {/* Section Header */}
           <div className="flex items-end justify-between mb-6 sm:mb-8">
             <div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-1">
@@ -350,10 +372,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Products Slider */}
           <div
             ref={sliderRef}
-            className="flex gap-4 sm:gap-5 md:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
+            className="flex gap-4 sm:gap-5 md:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0 cursor-grab active:cursor-grabbing"
           >
             {featuredProducts.map((product) => (
               <div
@@ -365,7 +386,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Mobile View All Button */}
           <div className="mt-6 sm:hidden text-center">
             <Link
               href="/men"
@@ -390,12 +410,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= TRUST SECTION - Premium Light ================= */}
+      {/* ================= TRUST SECTION ================= */}
       <section className="py-16 sm:py-20 md:py-24 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          {/* Box */}
           <div className="bg-gradient-to-br from-white via-blue-50/20 to-indigo-50/20 rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200 p-6 sm:p-8 md:p-12">
-            {/* Heading */}
             <div className="text-center mb-8 sm:mb-10 md:mb-12">
               <div className="inline-block px-5 py-2 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 text-blue-700 text-xs sm:text-sm font-semibold mb-4 shadow-sm">
                 Trusted Shopping Experience
@@ -409,7 +427,6 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Points */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               <TrustPoint text="Cash on Delivery Available" icon="💰" />
               <TrustPoint text="100% Original Products" icon="✨" />
@@ -419,7 +436,6 @@ export default function HomePage() {
               <TrustPoint text="Trusted by 10,000+ Happy Customers" icon="⭐" />
             </div>
 
-            {/* CTA Button */}
             <div className="mt-8 sm:mt-10 text-center">
               <Link
                 href="/men"
@@ -433,7 +449,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Add scrollbar-hide utility */}
       <style jsx global>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -463,7 +478,7 @@ export default function HomePage() {
 }
 
 /* ======================================================================
-   CATEGORY CARD COMPONENT - Premium Light
+   COMPONENTS
 ====================================================================== */
 
 const CategoryCard = ({
@@ -516,14 +531,9 @@ const CategoryCard = ({
   );
 };
 
-/* ======================================================================
-   TRUST POINT COMPONENT - Premium Light
-====================================================================== */
-
 const TrustPoint = ({ text, icon }: { text: string; icon: string }) => {
   return (
     <div className="flex items-center gap-3 sm:gap-4 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group">
-      {/* Icon */}
       <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-xl sm:text-2xl shadow-sm group-hover:scale-110 transition-transform duration-200">
         {icon}
       </div>
