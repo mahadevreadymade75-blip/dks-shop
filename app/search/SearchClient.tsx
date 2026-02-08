@@ -126,22 +126,7 @@ export default function SearchClient() {
                 );
               }}
               placeholder="Search products, brands, categories…"
-              className="
-                w-full
-                rounded-2xl
-                pl-12 pr-12 py-3 sm:py-4
-                border-2 border-gray-200
-                bg-white
-                text-sm sm:text-base
-                outline-none
-                focus:border-blue-500
-                focus:ring-4
-                focus:ring-blue-100
-                transition-all
-                duration-200
-                shadow-sm
-                hover:shadow-md
-              "
+              className="w-full rounded-2xl pl-12 pr-12 py-3 sm:py-4 border-2 border-gray-200 bg-white text-sm sm:text-base outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 shadow-sm hover:shadow-md"
               autoFocus
             />
 
