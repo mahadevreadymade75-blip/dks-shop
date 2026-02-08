@@ -34,3 +34,26 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Performance Optimizations */
+
+/* Hide scrollbar for featured products slider */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerate {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimize image rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
