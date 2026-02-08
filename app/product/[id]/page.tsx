@@ -143,7 +143,7 @@ export default function ProductDetailPage() {
   /* ================= LOADING STATE ================= */
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-blue-50/30 pt-20">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 text-base font-medium">
@@ -155,9 +155,9 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-blue-50/30 text-gray-900">
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-blue-50/30 text-gray-900 pt-16 md:pt-20">
       {/* ================= BREADCRUMB ================= */}
-      <div className="bg-white border-b border-gray-200 pt-20 sm:pt-24 md:pt-28">
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 text-sm">
             <button
@@ -174,7 +174,7 @@ export default function ProductDetailPage() {
               {product.category}
             </button>
             <span className="text-gray-400">›</span>
-            <span className="text-gray-900 font-medium truncate">
+            <span className="text-gray-900 font-medium truncate max-w-[200px] sm:max-w-none">
               {product.name}
             </span>
           </div>
@@ -183,13 +183,15 @@ export default function ProductDetailPage() {
 
       {/* ================= PRODUCT SECTION ================= */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* ================= IMAGE GALLERY ================= */}
           <div className="flex flex-col gap-4">
-            {/* Main Image */}
-            <div className="relative w-full aspect-[3/4] bg-white rounded-2xl overflow-hidden shadow-lg group">
+            {/* Main Image - WHITE BACKGROUND */}
+            <div className="relative w-full aspect-square bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-200 group">
               {!imageLoaded[activeImage] && (
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-blue-100 animate-pulse" />
+                <div className="absolute inset-0 bg-white flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                </div>
               )}
               <Image
                 src={images[activeImage]}
@@ -198,10 +200,10 @@ export default function ProductDetailPage() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 quality={95}
                 priority
-                className={`object-cover transition-all duration-700 ${
+                className={`object-contain p-8 transition-all duration-700 ${
                   imageLoaded[activeImage]
                     ? "opacity-100 scale-100"
-                    : "opacity-0 scale-105"
+                    : "opacity-0 scale-95"
                 } group-hover:scale-105`}
                 onLoadingComplete={() =>
                   setImageLoaded((prev) => ({ ...prev, [activeImage]: true }))
@@ -211,7 +213,7 @@ export default function ProductDetailPage() {
               {/* Discount Badge */}
               {discount && (
                 <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-10">
-                  <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg">
+                  <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-xl">
                     <span className="text-sm sm:text-base font-bold">
                       -{discount}% OFF
                     </span>
@@ -232,11 +234,11 @@ export default function ProductDetailPage() {
                         [newIndex]: false,
                       }));
                     }}
-                    className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/95 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white hover:scale-110 transition-all opacity-0 group-hover:opacity-100 z-10"
+                    className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 hover:scale-110 transition-all z-10 border border-gray-200"
                     aria-label="Previous image"
                   >
                     <svg
-                      className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900"
+                      className="w-6 h-6 text-gray-900"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -244,7 +246,7 @@ export default function ProductDetailPage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         d="M15 19l-7-7 7-7"
                       />
                     </svg>
@@ -259,11 +261,11 @@ export default function ProductDetailPage() {
                         [newIndex]: false,
                       }));
                     }}
-                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/95 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white hover:scale-110 transition-all opacity-0 group-hover:opacity-100 z-10"
+                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 hover:scale-110 transition-all z-10 border border-gray-200"
                     aria-label="Next image"
                   >
                     <svg
-                      className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900"
+                      className="w-6 h-6 text-gray-900"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -271,7 +273,7 @@ export default function ProductDetailPage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         d="M9 5l7 7-7 7"
                       />
                     </svg>
@@ -281,13 +283,13 @@ export default function ProductDetailPage() {
 
               {/* Image Counter */}
               {images.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium">
+                <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold border border-gray-200 shadow-md">
                   {activeImage + 1} / {images.length}
                 </div>
               )}
             </div>
 
-            {/* Thumbnails */}
+            {/* Thumbnails - WHITE BACKGROUND */}
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 {images.map((img, idx) => (
@@ -297,19 +299,19 @@ export default function ProductDetailPage() {
                       setActiveImage(idx);
                       setImageLoaded((prev) => ({ ...prev, [idx]: false }));
                     }}
-                    className={`relative h-20 sm:h-24 w-16 sm:w-20 flex-shrink-0 rounded-lg overflow-hidden transition-all duration-300 ${
+                    className={`relative h-20 sm:h-24 w-20 sm:w-24 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 bg-white border-2 ${
                       activeImage === idx
-                        ? "ring-2 ring-blue-600 scale-105 shadow-lg"
-                        : "ring-1 ring-gray-200 hover:ring-blue-400 opacity-60 hover:opacity-100"
+                        ? "border-blue-600 scale-105 shadow-lg"
+                        : "border-gray-200 hover:border-blue-400 opacity-60 hover:opacity-100"
                     }`}
                   >
                     <Image
                       src={img}
                       alt={`Thumbnail ${idx + 1}`}
                       fill
-                      sizes="80px"
-                      className="object-cover"
-                      quality={60}
+                      sizes="96px"
+                      className="object-contain p-2"
+                      quality={70}
                     />
                   </button>
                 ))}
@@ -322,7 +324,7 @@ export default function ProductDetailPage() {
             {/* Category Badge */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100">
-                <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent uppercase tracking-wider">
                   {product.category}
                 </span>
               </div>
@@ -374,7 +376,8 @@ export default function ProductDetailPage() {
 
             {/* Description */}
             <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-200 shadow-sm">
-              <h3 className="text-lg font-bold text-gray-900 mb-3">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span>📋</span>
                 Product Details
               </h3>
               <p className="text-sm sm:text-base leading-relaxed text-gray-700">
@@ -386,7 +389,8 @@ export default function ProductDetailPage() {
             {product.sizes && product.sizes.length > 0 && (
               <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <span>📏</span>
                     Select Size
                   </h3>
                   {selectedSize && (
@@ -415,7 +419,8 @@ export default function ProductDetailPage() {
 
             {/* Quantity Selector */}
             <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-200 shadow-sm">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span>🔢</span>
                 Quantity
               </h3>
               <div className="flex items-center gap-4">
