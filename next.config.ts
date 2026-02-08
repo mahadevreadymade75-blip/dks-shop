@@ -12,7 +12,6 @@ const nextConfig = {
   },
 
   // Performance Optimizations
-  swcMinify: true,
   compress: true,
   
   // Experimental Features for Speed
