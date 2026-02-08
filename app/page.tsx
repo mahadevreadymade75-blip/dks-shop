@@ -63,14 +63,12 @@ export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const animationFrameRef = useRef<number>();
-  const lastScrollRef = useRef<number>(0);
 
   /* ================= HERO AUTO SLIDE ================= */
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+      setCurrentSlide(prev => (prev + 1) % heroSlides.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -90,68 +88,57 @@ export default function HomePage() {
   }, []);
 
   const featuredProducts = useMemo(() => {
-    const categories = Array.from(new Set(allProducts.map((p) => p.category)));
+    const categories = Array.from(
+      new Set(allProducts.map((p) => p.category))
+    );
 
     const mixed = categories.flatMap((category) =>
-      allProducts.filter((p) => p.category === category).slice(0, 4),
+      allProducts.filter((p) => p.category === category).slice(0, 4)
     );
 
     return mixed.slice(0, 20);
   }, [allProducts]);
 
-  /* ================= OPTIMIZED FEATURED AUTO SCROLL ================= */
+  /* ================= FEATURED AUTO SCROLL ================= */
 
   useEffect(() => {
     const el = sliderRef.current;
     if (!el) return;
 
+    let scroll = el.scrollLeft;
+    let rafId: number;
     let isUserInteracting = false;
     let isVisible = true;
 
-    const speed = window.innerWidth < 768 ? 0.3 : 0.4;
+    const speed = window.innerWidth < 768 ? 0.25 : 0.35;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         isVisible = entry.isIntersecting;
-        if (!isVisible && animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-        }
       },
-      { threshold: 0.1 },
+      { threshold: 0.2 }
     );
 
     observer.observe(el);
 
-    const animate = (timestamp: number) => {
-      if (!isUserInteracting && isVisible && el) {
-        const delta = timestamp - lastScrollRef.current;
-
-        // Throttle to ~60fps
-        if (delta > 16) {
-          lastScrollRef.current = timestamp;
-
-          if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) {
-            el.scrollLeft = 0;
-          } else {
-            el.scrollLeft += speed;
-          }
+    const animate = () => {
+      if (!isUserInteracting && isVisible) {
+        scroll += speed;
+        if (scroll >= el.scrollWidth - el.clientWidth) {
+          scroll = 0;
         }
-
-        animationFrameRef.current = requestAnimationFrame(animate);
+        el.scrollLeft = scroll;
       }
+      rafId = requestAnimationFrame(animate);
     };
 
     const stop = () => {
       isUserInteracting = true;
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
     };
 
     const start = () => {
+      scroll = el.scrollLeft;
       isUserInteracting = false;
-      lastScrollRef.current = performance.now();
-      animationFrameRef.current = requestAnimationFrame(animate);
     };
 
     el.addEventListener("mouseenter", stop);
@@ -159,19 +146,11 @@ export default function HomePage() {
     el.addEventListener("touchstart", stop, { passive: true });
     el.addEventListener("touchend", start);
 
-    // Start animation
-    lastScrollRef.current = performance.now();
-    animationFrameRef.current = requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
 
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      cancelAnimationFrame(rafId);
       observer.disconnect();
-      el.removeEventListener("mouseenter", stop);
-      el.removeEventListener("mouseleave", start);
-      el.removeEventListener("touchstart", stop);
-      el.removeEventListener("touchend", start);
     };
   }, []);
 
@@ -179,33 +158,34 @@ export default function HomePage() {
 
   return (
     <main className="bg-gray-50 text-gray-900">
+
       {/* ======================================================
          HERO SECTION
       ====================================================== */}
       <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center overflow-hidden">
-        {/* Background Image - Optimized loading */}
+
+        {/* Background Image */}
         <Link href={slide.link} className="absolute inset-0">
           <Image
             src={slide.image}
             alt={slide.title}
             fill
             priority
-            quality={85}
             sizes="100vw"
-            className="object-cover transition-opacity duration-500"
-            loading="eager"
+            className="object-fill md:object-fill transition-all duration-700"
           />
+
         </Link>
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-black/20" />
 
-        {/* Hero Content - Reduced animation complexity */}
+        {/* Hero Content */}
         <motion.div
           key={currentSlide}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="relative z-10 w-full max-w-5xl px-6 md:px-16 ml-auto text-right"
         >
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-white">
@@ -219,14 +199,14 @@ export default function HomePage() {
           <div className="mt-8 flex gap-4 justify-end flex-wrap">
             <Link
               href={slide.link}
-              className="px-8 py-3 md:px-10 md:py-4 rounded-full bg-white text-black font-semibold hover:scale-105 transition-transform"
+              className="px-8 py-3 md:px-10 md:py-4 rounded-full bg-white text-black font-semibold hover:scale-105 transition"
             >
               {slide.cta}
             </Link>
 
             <Link
               href="/cart"
-              className="px-8 py-3 md:px-10 md:py-4 rounded-full border border-white text-white hover:bg-white hover:text-black transition-colors"
+              className="px-8 py-3 md:px-10 md:py-4 rounded-full border border-white text-white hover:bg-white hover:text-black transition"
             >
               Cart
             </Link>
@@ -253,16 +233,8 @@ export default function HomePage() {
             <CategoryCard title="Women" image="/women.jpg" link="/women" />
             <CategoryCard title="Watches" image="/watch.jpg" link="/watches" />
             <CategoryCard title="Shoes" image="/shoes.jpg" link="/shoes" />
-            <CategoryCard
-              title="Home & Kitchen"
-              image="/homeKitchen.jpg"
-              link="/home-kitchen"
-            />
-            <CategoryCard
-              title="Kids Clothing"
-              image="/child.jpg"
-              link="/kids"
-            />
+            <CategoryCard title="Home & Kitchen" image="/homeKitchen.jpg" link="/home-kitchen" />
+            <CategoryCard title="Kids Clothing" image="/child.jpg" link="/kids" />
           </div>
         </div>
       </section>
@@ -272,10 +244,10 @@ export default function HomePage() {
       ====================================================== */}
       <section className="py-24 bg-white">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          viewport={{ once: true, margin: "-100px" }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
           className="max-w-7xl mx-auto px-6"
         >
           <h2 className="text-2xl md:text-3xl font-bold mb-10">
@@ -284,57 +256,60 @@ export default function HomePage() {
 
           <div
             ref={sliderRef}
-            className="flex gap-6 overflow-x-auto pb-6 cursor-grab scrollbar-hide"
-            style={{
-              scrollBehavior: "auto",
-              WebkitOverflowScrolling: "touch",
-            }}
+            className="flex gap-6 overflow-x-auto pb-6 cursor-grab"
           >
-            {featuredProducts.map((product) => (
-              <div
+            {featuredProducts.map(product => (
+              <motion.div
                 key={product.id}
-                className="w-[220px] sm:w-[260px] h-[520px] md:h-[560px] flex-none hover:scale-105 transition-transform duration-200"
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.2 }}
+                className="w-[220px] sm:w-[260px] h-[520px] md:h-[560px] flex-none"
               >
                 <ProductCard product={product} />
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
       </section>
 
-      {/* ================= TRUST SECTION ================= */}
+      {/* /* ================= TRUST SECTION ================= */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
+
           {/* Box */}
           <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 md:p-12">
+
             {/* Heading */}
             <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900">
               Why Shop With Us?
             </h2>
 
             <p className="mt-3 text-center text-gray-600 max-w-2xl mx-auto">
-              Trusted by customers across India for quality products and
-              reliable service
+              Trusted by customers across India for quality products and reliable service
             </p>
 
             {/* Points */}
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+
               <TrustPoint text="Cash on Delivery Available" />
               <TrustPoint text="100% Original Products" />
               <TrustPoint text="Fast Shipping All Over India" />
               <TrustPoint text="Easy Return & Exchange" />
               <TrustPoint text="Direct WhatsApp Support" />
               <TrustPoint text="Trusted by 460+ Happy Customers" />
+
             </div>
           </div>
         </div>
       </section>
+
+
     </main>
   );
 }
 
 /* ======================================================================
-   CATEGORY CARD COMPONENT - Optimized
+   CATEGORY CARD COMPONENT
 ====================================================================== */
 
 function CategoryCard({
@@ -349,16 +324,14 @@ function CategoryCard({
   return (
     <Link
       href={link}
-      className="relative group h-[190px] sm:h-[210px] md:h-[230px] rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-shadow"
+      className="relative group h-[190px] sm:h-[210px] md:h-[230px] rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition"
     >
       <Image
         src={image}
         alt={title}
         fill
-        quality={80}
         sizes="(max-width: 768px) 50vw, 25vw"
-        className="object-cover transition-transform duration-300 group-hover:scale-105"
-        loading="lazy"
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
@@ -374,13 +347,16 @@ function CategoryCard({
 
 function TrustPoint({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-4 bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors">
+    <div className="flex items-center gap-4 bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition">
+
       {/* Check Icon */}
       <div className="flex-shrink-0 w-9 h-9 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold">
         ✓
       </div>
 
-      <p className="text-gray-800 font-medium">{text}</p>
+      <p className="text-gray-800 font-medium">
+        {text}
+      </p>
     </div>
   );
 }

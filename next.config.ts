@@ -1,27 +1,36 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-
-  // ✅ Fast builds
-  swcMinify: true,
-
-  // ✅ Enable compression
-  compress: true,
-
-  // ✅ Image Optimization (MOST IMPORTANT)
+  // Image Optimization
   images: {
-    formats: ["image/avif", "image/webp"],
-    deviceSizes: [360, 640, 768, 1024, 1280, 1536],
-    imageSizes: [16, 32, 64, 128, 256],
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
-    // Disable optimization to allow external image hosts (avoids host validation)
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // ⚠️ Typescript (keep as is for now)
-  typescript: {
-    ignoreBuildErrors: true,
+  // Performance Optimizations
+  swcMinify: true,
+  compress: true,
+  
+  // Experimental Features for Speed
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['framer-motion'],
   },
+
+  // Production Optimizations
+  productionBrowserSourceMaps: false,
+  
+  // Compiler Options
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
+  // React Strict Mode
+  reactStrictMode: true,
 };
 
 module.exports = nextConfig;
