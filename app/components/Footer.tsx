@@ -46,7 +46,7 @@ export default function Footer() {
             <FooterLink href="/help">Help Center</FooterLink>
             <FooterLink href="/support">Customer Support</FooterLink>
             <FooterLink href="/contact">Contact Us</FooterLink>
-            <FooterLink href="/privacy">Privacy Policy</FooterLink>
+            <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
             <FooterLink href="/terms">Terms & Conditions</FooterLink>
             <FooterLink href="/about">About Us</FooterLink>
           </FooterColumn>
