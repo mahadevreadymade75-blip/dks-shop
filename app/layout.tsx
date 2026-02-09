@@ -87,7 +87,7 @@ export const metadata: Metadata = {
 
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.ico", sizes: "any" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 
   verification: {
-    google: "your-google-verification-code", // Add your Google Search Console verification code
+    google: "etzD6f_EjLAznQ93nzi2IIPG0iARfVWsLemK_2CnKBg", // Add your Google Search Console verification code
     // yandex: "your-yandex-verification-code",
     // bing: "your-bing-verification-code",
   },
