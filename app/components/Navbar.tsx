@@ -34,7 +34,6 @@ export default function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const mobileDropdownRef = useRef<HTMLDivElement | null>(null);
 
   /* ADMIN COOKIE */
   useEffect(() => {
@@ -80,18 +79,12 @@ export default function Navbar() {
     };
   }, []);
 
-  // Click outside handler for desktop dropdown
+  // Click outside handler
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setShowDropdown(false);
-      }
-      if (
-        mobileDropdownRef.current &&
-        !mobileDropdownRef.current.contains(e.target as Node)
       ) {
         setShowDropdown(false);
       }
@@ -307,12 +300,12 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU - PREMIUM UI */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-gray-200 bg-white shadow-lg">
           <div className="px-4 sm:px-5 py-4 sm:py-5 space-y-4 sm:space-y-5">
-            {/* MOBILE SEARCH */}
-            <div className="relative" ref={mobileDropdownRef}>
+            {/* MOBILE SEARCH - PREMIUM UI */}
+            <div className="relative" ref={dropdownRef}>
               <div className="relative">
                 <input
                   value={query}
@@ -323,11 +316,12 @@ export default function Navbar() {
                   onFocus={() => setShowDropdown(true)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   placeholder="Search products…"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
 
+                {/* Search Icon */}
                 <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -340,6 +334,7 @@ export default function Navbar() {
                   />
                 </svg>
 
+                {/* Clear Button */}
                 {query && (
                   <button
                     onClick={clearSearch}
@@ -350,6 +345,7 @@ export default function Navbar() {
                 )}
               </div>
 
+              {/* MOBILE DROPDOWN - PREMIUM UI */}
               {showDropdown && (
                 <div className="absolute mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] overflow-hidden max-h-[60vh] overflow-y-auto">
                   {!debouncedQuery && (
@@ -367,7 +363,7 @@ export default function Navbar() {
                             setMobileOpen(false);
                             setShowDropdown(false);
                           }}
-                          className="px-4 py-3 text-sm hover:bg-blue-50 transition-colors flex items-center gap-3"
+                          className="px-4 py-3 text-sm cursor-pointer hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center gap-3"
                         >
                           <span className="text-xl">{item.icon}</span>
                           <span className="text-gray-700 font-medium">
@@ -383,6 +379,9 @@ export default function Navbar() {
                       <div className="px-4 py-6 text-center">
                         <p className="text-sm text-gray-500">
                           No results found
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          Try a different search
                         </p>
                       </div>
                     ) : (
@@ -400,9 +399,8 @@ export default function Navbar() {
                               router.push(`/product/${p.id}`);
                               setMobileOpen(false);
                               setShowDropdown(false);
-                              clearSearch();
                             }}
-                            className="px-4 py-3 text-sm hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-0"
+                            className="px-4 py-3 text-sm cursor-pointer hover:bg-blue-50 active:bg-blue-100 transition-colors border-b border-gray-100 last:border-0"
                           >
                             <div className="font-medium text-gray-900">
                               {p.name}
