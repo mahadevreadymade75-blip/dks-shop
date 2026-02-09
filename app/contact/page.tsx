@@ -36,7 +36,7 @@ Message:
 ${formData.message}
     `.trim();
 
-    const whatsappUrl = `https://wa.me/918741803589?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/919950388083?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
 
     setSubmitStatus("success");
@@ -268,14 +268,14 @@ ${formData.message}
                         Phone
                       </p>
                       <p className="text-sm font-bold text-gray-900 mt-1">
-                        +91 8741803589
+                        +91 9950388083
                       </p>
                     </div>
                   </a>
 
                   {/* WhatsApp */}
                   <a
-                    href="https://wa.me/918741803589"
+                    href="https://wa.me/919950388083"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-start gap-4 group hover:bg-green-50 p-3 rounded-xl transition-all duration-200"
@@ -335,7 +335,7 @@ ${formData.message}
                   Get instant support through WhatsApp
                 </p>
                 <Link
-                  href="https://wa.me/918741803589?text=Hi! I need help"
+                  href="https://wa.me/919950388083?text=Hi! I need help"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-3 px-4 rounded-xl bg-white text-blue-600 font-bold text-center hover:bg-blue-50 active:scale-95 transition-all duration-200"

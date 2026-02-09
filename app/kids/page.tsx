@@ -356,7 +356,7 @@ export default function KidsPage() {
           </p>
 
           <Link
-            href="https://wa.me/918741803589?text=Hi! I want to order kids products"
+            href="https://wa.me/919950388083?text=Hi! I want to order kids products"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 sm:gap-3 px-8 sm:px-10 md:px-12 py-3.5 sm:py-4 md:py-5 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold shadow-xl shadow-pink-200 hover:shadow-2xl hover:shadow-pink-300 hover:scale-105 active:scale-95 transition-all duration-200 text-sm sm:text-base md:text-lg"

@@ -68,6 +68,22 @@ export default function ProductCard({ product }: Props) {
         images,
       });
 
+      /* ================= GA4 ADD TO CART TRACKING ================= */
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "add_to_cart", {
+          currency: "INR",
+          value: product.price,
+          items: [
+            {
+              item_id: product.id,
+              item_name: product.name,
+              price: product.price,
+              quantity: 1,
+            },
+          ],
+        });
+      }
+
       setTimeout(() => setIsAddingToCart(false), 500);
     },
     [addToCart, product],

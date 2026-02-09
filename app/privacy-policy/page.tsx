@@ -198,7 +198,7 @@ export default function PrivacyPolicyPage() {
                   <p className="mt-4">
                     To exercise these rights, please contact us at{" "}
                     <a
-                      href="https://wa.me/918741803589"
+                      href="https://wa.me/919950388083"
                       className="text-blue-600 hover:text-blue-700 font-semibold"
                     >
                       WhatsApp
@@ -258,13 +258,13 @@ export default function PrivacyPolicyPage() {
                           href="tel:+918741803589"
                           className="text-blue-600 hover:text-blue-700"
                         >
-                          +91 8741803589
+                          +91 9950388083
                         </a>
                       </p>
                       <p>
                         <strong>WhatsApp:</strong>{" "}
                         <a
-                          href="https://wa.me/918741803589"
+                          href="https://wa.me/919950388083"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-700"

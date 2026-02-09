@@ -56,13 +56,13 @@ export default function Footer() {
             <ContactItem icon="📍" text="India" />
             <ContactItem
               icon="📞"
-              text="+91 8741803589"
-              link="tel:+918741803589"
+              text="+91 9950388083"
+              link="tel:+919950388083"
             />
             <ContactItem
               icon="💬"
               text="WhatsApp Orders"
-              link="https://wa.me/918741803589"
+              link="https://wa.me/919950388083"
             />
             <ContactItem icon="⏰" text="10 AM – 8 PM" />
             <ContactItem

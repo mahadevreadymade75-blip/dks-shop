@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Checkout() {
@@ -10,6 +10,21 @@ export default function Checkout() {
 
   const shipping = totalPrice > 1000 ? 0 : 50;
   const total = totalPrice + shipping;
+  /* ================= GA4 BEGIN CHECKOUT TRACKING ================= */
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window as any).gtag && !isEmpty) {
+      (window as any).gtag("event", "begin_checkout", {
+        currency: "INR",
+        value: total,
+        items: cart.map((item) => ({
+          item_id: String(item.id),
+          item_name: item.name,
+          price: item.price,
+          quantity: item.qty,
+        })),
+      });
+    }
+  }, [cart, total, isEmpty]);
 
   const placeOrder = async (formData: FormData) => {
     if (isEmpty) return;
@@ -81,10 +96,25 @@ Thank you for shopping with us! 🙏
 We'll contact you shortly to confirm your order.
     `);
 
+    /* ================= GA4 PURCHASE TRACKING ================= */
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "purchase", {
+        transaction_id: orderNumber,
+        value: total,
+        currency: "INR",
+        items: cart.map((item) => ({
+          item_id: String(item.id),
+          item_name: item.name,
+          price: item.price,
+          quantity: item.qty,
+        })),
+      });
+    }
+
     // Delay for better UX
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    window.open(`https://wa.me/+918741803589?text=${message}`);
+    window.open(`https://wa.me/+919950388083?text=${message}`);
     setIsSubmitting(false);
   };
 

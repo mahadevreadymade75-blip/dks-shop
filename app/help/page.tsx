@@ -172,7 +172,7 @@ export default function HelpPage() {
 
           <div className="flex justify-center gap-4 flex-wrap">
             <a
-              href="https://wa.me/918741803589"
+              href="https://wa.me/919950388083"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"

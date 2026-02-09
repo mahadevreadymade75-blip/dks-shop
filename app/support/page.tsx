@@ -321,7 +321,7 @@ export default function SupportPage() {
 
           <div className="flex justify-center gap-4 flex-wrap">
             <a
-              href="https://wa.me/918741803589"
+              href="https://wa.me/919950388083"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"

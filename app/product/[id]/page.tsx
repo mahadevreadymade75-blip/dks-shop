@@ -40,6 +40,25 @@ export default function ProductDetailPage() {
   }, []);
 
   const product = allProducts.find((p) => String(p.id) === id);
+
+  useEffect(() => {
+    if (!product) return;
+
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "view_item", {
+        currency: "INR",
+        value: product.price,
+        items: [
+          {
+            item_id: product.id,
+            item_name: product.name,
+            price: product.price,
+          },
+        ],
+      });
+    }
+  }, [product]);
+
   const shuffle = <T,>(arr: T[]) => [...arr].sort(() => Math.random() - 0.5);
 
   useEffect(() => {

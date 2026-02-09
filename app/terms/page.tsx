@@ -369,16 +369,16 @@ export default function TermsConditionsPage() {
                       <p>
                         <strong>Phone:</strong>{" "}
                         <a
-                          href="tel:+918741803589"
+                          href="tel:+919950388083"
                           className="text-blue-600 hover:text-blue-700"
                         >
-                          +91 8741803589
+                          +91 9950388083
                         </a>
                       </p>
                       <p>
                         <strong>WhatsApp:</strong>{" "}
                         <a
-                          href="https://wa.me/918741803589"
+                          href="https://wa.me/919950388083"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-700"
