@@ -93,47 +93,50 @@ export default function HomePage() {
     return mixed.slice(0, 20);
   }, [allProducts]);
 
-  /* ================= AUTO SCROLL - FIXED VERSION ================= */
+  /* ================= ULTRA-SMOOTH AUTO SCROLL ================= */
   useEffect(() => {
     const el = sliderRef.current;
     if (!el || featuredProducts.length === 0) return;
 
     let rafId: number;
-    const speed = 1; // Smooth scroll speed
+    const speed = 0.3; // Slower, smoother speed
     let isPaused = false;
     let pauseTimeout: NodeJS.Timeout;
+    let currentPosition = 0;
 
     const scroll = () => {
       if (!isPaused && el) {
-        scrollVelocityRef.current += speed;
+        // Smooth increment
+        currentPosition += speed;
 
-        // Loop back to start
-        if (scrollVelocityRef.current >= el.scrollWidth - el.clientWidth) {
-          scrollVelocityRef.current = 0;
+        // Loop back to start smoothly
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (currentPosition >= maxScroll) {
+          currentPosition = 0;
         }
 
-        el.scrollLeft = scrollVelocityRef.current;
+        // Apply smooth scroll
+        el.scrollLeft = currentPosition;
       }
       rafId = requestAnimationFrame(scroll);
     };
 
-    // Pause when user interacts
+    // Pause on user interaction
     const pauseScroll = () => {
       isPaused = true;
+      currentPosition = el.scrollLeft; // Save current position
       clearTimeout(pauseTimeout);
 
       // Resume after 3 seconds
       pauseTimeout = setTimeout(() => {
-        if (el) {
-          scrollVelocityRef.current = el.scrollLeft;
-          isPaused = false;
-        }
+        isPaused = false;
       }, 3000);
     };
 
-    // Listen to interactions
+    // Event listeners - passive for better performance
     el.addEventListener("mouseenter", pauseScroll, { passive: true });
     el.addEventListener("touchstart", pauseScroll, { passive: true });
+    el.addEventListener("wheel", pauseScroll, { passive: true });
 
     // Start scrolling
     rafId = requestAnimationFrame(scroll);
@@ -143,6 +146,7 @@ export default function HomePage() {
       clearTimeout(pauseTimeout);
       el.removeEventListener("mouseenter", pauseScroll);
       el.removeEventListener("touchstart", pauseScroll);
+      el.removeEventListener("wheel", pauseScroll);
     };
   }, [featuredProducts.length]);
 
@@ -358,8 +362,11 @@ export default function HomePage() {
 
           <div
             ref={sliderRef}
-            className="flex gap-2.5 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
-            style={{ WebkitOverflowScrolling: "touch" }}
+            className="flex gap-2.5 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0"
+            style={{
+              WebkitOverflowScrolling: "touch",
+              scrollBehavior: "auto",
+            }}
           >
             {featuredProducts.map((product) => (
               <div
