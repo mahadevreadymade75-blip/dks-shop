@@ -1,4 +1,5 @@
 import "./globals.css";
+import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/context/CartContext";
@@ -289,6 +290,20 @@ export default function RootLayout({
       </head>
 
       <body className="bg-black text-white">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-94VNTB23Y3"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-94VNTB23Y3');
+  `}
+        </Script>
+
         {/* Organization Schema */}
         <script
           type="application/ld+json"
