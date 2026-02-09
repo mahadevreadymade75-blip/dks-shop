@@ -288,24 +288,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
-        {/* GA4 */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-94VNTB23Y3"
-          strategy="afterInteractive"
-        />
-
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94VNTB23Y3');
-      `}
-        </Script>
-      </head>
-
-      <body className="bg-black text-white">
-
         {/* Organization Schema */}
         <script
           type="application/ld+json"
@@ -338,6 +320,23 @@ export default function RootLayout({
           }}
         />
 
+        {/* GA4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-94VNTB23Y3"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-94VNTB23Y3');
+      `}
+        </Script>
+      </head>
+
+      <body className="bg-black text-white">
         <CartProvider>
           <Navbar />
           <main id="main-content" role="main">
