@@ -58,7 +58,6 @@ export default function HomePage() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const scrollVelocityRef = useRef(0);
-  const isScrollingRef = useRef(false);
   const [imageLoaded, setImageLoaded] = useState<Record<number, boolean>>({});
 
   /* ================= HERO AUTO SLIDE ================= */
@@ -94,20 +93,21 @@ export default function HomePage() {
     return mixed.slice(0, 20);
   }, [allProducts]);
 
-  /* ================= PERFECT AUTO SCROLL WITH USER CONTROL ================= */
+  /* ================= AUTO SCROLL - FIXED VERSION ================= */
   useEffect(() => {
     const el = sliderRef.current;
     if (!el || featuredProducts.length === 0) return;
 
     let rafId: number;
-    const speed = 0.5;
-    let userScrollTimeout: NodeJS.Timeout;
+    const speed = 1; // Smooth scroll speed
+    let isPaused = false;
+    let pauseTimeout: NodeJS.Timeout;
 
     const scroll = () => {
-      if (!isScrollingRef.current && el) {
+      if (!isPaused && el) {
         scrollVelocityRef.current += speed;
 
-        // Loop back to start when reaching end
+        // Loop back to start
         if (scrollVelocityRef.current >= el.scrollWidth - el.clientWidth) {
           scrollVelocityRef.current = 0;
         }
@@ -117,46 +117,32 @@ export default function HomePage() {
       rafId = requestAnimationFrame(scroll);
     };
 
-    // User starts scrolling/touching
-    const handleUserScrollStart = () => {
-      isScrollingRef.current = true;
-      clearTimeout(userScrollTimeout);
-    };
+    // Pause when user interacts
+    const pauseScroll = () => {
+      isPaused = true;
+      clearTimeout(pauseTimeout);
 
-    // User stops scrolling - resume auto-scroll after 2 seconds
-    const handleUserScrollEnd = () => {
-      clearTimeout(userScrollTimeout);
-      userScrollTimeout = setTimeout(() => {
+      // Resume after 3 seconds
+      pauseTimeout = setTimeout(() => {
         if (el) {
           scrollVelocityRef.current = el.scrollLeft;
-          isScrollingRef.current = false;
+          isPaused = false;
         }
-      }, 2000);
+      }, 3000);
     };
 
-    // Listen to scroll event for manual scrolling
-    const handleScroll = () => {
-      if (!isScrollingRef.current) {
-        handleUserScrollStart();
-      }
-      handleUserScrollEnd();
-    };
+    // Listen to interactions
+    el.addEventListener("mouseenter", pauseScroll, { passive: true });
+    el.addEventListener("touchstart", pauseScroll, { passive: true });
 
-    // Mouse/Touch events
-    el.addEventListener("mousedown", handleUserScrollStart);
-    el.addEventListener("touchstart", handleUserScrollStart, { passive: true });
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    el.addEventListener("mouseleave", handleUserScrollEnd);
-
+    // Start scrolling
     rafId = requestAnimationFrame(scroll);
 
     return () => {
       cancelAnimationFrame(rafId);
-      clearTimeout(userScrollTimeout);
-      el.removeEventListener("mousedown", handleUserScrollStart);
-      el.removeEventListener("touchstart", handleUserScrollStart);
-      el.removeEventListener("scroll", handleScroll);
-      el.removeEventListener("mouseleave", handleUserScrollEnd);
+      clearTimeout(pauseTimeout);
+      el.removeEventListener("mouseenter", pauseScroll);
+      el.removeEventListener("touchstart", pauseScroll);
     };
   }, [featuredProducts.length]);
 
@@ -372,7 +358,7 @@ export default function HomePage() {
 
           <div
             ref={sliderRef}
-            className="flex gap-2.5 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0 cursor-grab active:cursor-grabbing touch-pan-x"
+            className="flex gap-2.5 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {featuredProducts.map((product) => (
@@ -478,18 +464,13 @@ export default function HomePage() {
           -webkit-tap-highlight-color: transparent;
         }
 
-        .touch-pan-x {
-          touch-action: pan-x;
-          -webkit-overflow-scrolling: touch;
-        }
-
         /* Extra small devices breakpoint */
         @media (min-width: 375px) {
-          .xs\:text-3xl {
+          .xs\\:text-3xl {
             font-size: 1.875rem;
             line-height: 2.25rem;
           }
-          .xs\:w-\[150px\] {
+          .xs\\:w-\\[150px\\] {
             width: 150px;
           }
         }

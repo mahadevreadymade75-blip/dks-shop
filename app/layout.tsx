@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   keywords: [
     "DKS Handloom",
     "DKS Handloom Dhanau",
+    "Dks handloom dhanau",
+    "dks handloom",
+    "D.K.S Handloom Dhanau",
+    "DKS handloom DHANAU",
     "handloom store india",
     "buy fashion online india",
     "premium fashion store",
@@ -34,8 +38,22 @@ export const metadata: Metadata = {
     "best online shopping",
     "affordable fashion india",
     "quality handloom products",
+    "DKS Cloth Storeeee",
+    "Dks Cloth Storeeee in Dhanau Barmer",
+    "Readymade Garment Retailers in Barmer",
+    "Clothing accessories store Dhanau",
+    "Clothing accessories store in Dhanau Rajasthan",
+    "64QM+VW8 Dhanau Rajasthan 344702",
+    "Teh Chohtan Barmer",
+    "1 Vpo Dhanau",
+    "गणेश handloom adel",
+    "sindhari viral gaw",
+    "reels life",
+    "Barmer PIN 344702",
+    "Rajasthan India",
+    "GST 08BDGPA1987C2ZR",
   ],
-  authors: [{ name: "DKS Handloom" }],
+  authors: [{ name: "DKS Handloom" }, { name: "Fateh Khan" }],
   creator: "DKS Handloom",
   publisher: "DKS Handloom",
   metadataBase: new URL("https://dkshandloom.online"),
@@ -97,9 +115,7 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 
   verification: {
-    google: "etzD6f_EjLAznQ93nzi2IIPG0iARfVWsLemK_2CnKBg", // Add your Google Search Console verification code
-    // yandex: "your-yandex-verification-code",
-    // bing: "your-bing-verification-code",
+    google: "etzD6f_EjLAznQ93nzi2IIPG0iARfVWsLemK_2CnKBg",
   },
 
   category: "E-commerce",
@@ -122,7 +138,11 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "DKS Handloom",
-    alternateName: "DKS Handloom Dhanau",
+    alternateName: [
+      "DKS Handloom Dhanau",
+      "D.K.S Handloom Dhanau",
+      "DKS Cloth Storeeee",
+    ],
     url: "https://dkshandloom.online",
     logo: {
       "@type": "ImageObject",
@@ -135,14 +155,24 @@ export default function RootLayout({
       "DKS Handloom is a premium fashion and lifestyle store offering quality products across India with fast delivery and easy returns.",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "64QM+VW8, 1 Vpo Dhanau, Teh Chohtan",
       addressLocality: "Dhanau",
       addressRegion: "Rajasthan",
+      postalCode: "344702",
       addressCountry: "IN",
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "27.1767",
+      longitude: "75.8885",
+    },
+    telephone: "+91-9950388083",
     sameAs: [
       "https://instagram.com/d.k.s._handloom_dhanau",
       "https://instagram.com/fateh_khan_halepoto_",
-      "https://facebook.com/fateh.khan",
+      "https://www.facebook.com/profile.php?id=61554928177647",
+      "https://www.justdial.com/Barmer/Dks-Cloth-Storeeee-in-Dhanau",
+      "https://www.indiamart.com/d-k-s-handloom",
     ],
     contactPoint: {
       "@type": "ContactPoint",
@@ -159,11 +189,17 @@ export default function RootLayout({
           "Thursday",
           "Friday",
           "Saturday",
-          "Sunday",
         ],
         opens: "09:00",
-        closes: "21:00",
+        closes: "20:00",
       },
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.1",
+      reviewCount: "30",
+      bestRating: "5",
+      worstRating: "1",
     },
   };
 
@@ -183,20 +219,28 @@ export default function RootLayout({
     },
   };
 
-  // Online Store Schema
-  const storeSchema = {
+  // Local Business Schema
+  const localBusinessSchema = {
     "@context": "https://schema.org",
-    "@type": "OnlineStore",
+    "@type": "ClothingStore",
     name: "DKS Handloom",
+    alternateName: "Dks Cloth Storeeee in Dhanau,Barmer",
     image: "https://dkshandloom.online/og-image.jpg",
     url: "https://dkshandloom.online",
     telephone: "+91-9950388083",
     priceRange: "₹₹",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "64QM+VW8, 1 Vpo Dhanau, Teh Chohtan",
       addressLocality: "Dhanau",
       addressRegion: "Rajasthan",
+      postalCode: "344702",
       addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "27.1767",
+      longitude: "75.8885",
     },
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
@@ -207,10 +251,9 @@ export default function RootLayout({
         "Thursday",
         "Friday",
         "Saturday",
-        "Sunday",
       ],
-      opens: "00:00",
-      closes: "23:59",
+      opens: "09:00",
+      closes: "20:00",
     },
     paymentAccepted: [
       "Cash",
@@ -220,6 +263,11 @@ export default function RootLayout({
       "Net Banking",
     ],
     currenciesAccepted: "INR",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.1",
+      reviewCount: "30",
+    },
   };
 
   // Breadcrumb Schema
@@ -237,7 +285,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Additional Meta Tags */}
         <meta charSet="utf-8" />
@@ -247,13 +295,46 @@ export default function RootLayout({
         />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
 
+        {/* Business Information Meta Tags */}
+        <meta name="business-name" content="DKS Handloom" />
+        <meta
+          name="business-address"
+          content="64QM+VW8, 1 Vpo Dhanau, Teh Chohtan, Barmer, Rajasthan 344702, India"
+        />
+        <meta name="business-phone" content="+91-9950388083" />
+        <meta
+          name="business-hours"
+          content="Monday-Saturday: 9:00 AM - 8:00 PM"
+        />
+        <meta
+          name="business-type"
+          content="Clothing Store, Fashion Retailer, Handloom Store"
+        />
+        <meta name="gst-number" content="08BDGPA1987C2ZR" />
+
+        {/* Location & Area Meta Tags */}
+        <meta name="city" content="Dhanau" />
+        <meta name="state" content="Rajasthan" />
+        <meta name="country" content="India" />
+        <meta name="postal-code" content="344702" />
+        <meta name="district" content="Barmer" />
+        <meta name="tehsil" content="Chohtan" />
+
+        {/* Alternative Names */}
+        <meta
+          name="alternative-name"
+          content="Dks Cloth Storeeee in Dhanau,Barmer"
+        />
+        <meta name="alternative-name-2" content="D.K.S Handloom Dhanau" />
+        <meta name="alternative-name-3" content="DKS handloom DHANAU" />
+
         {/* Theme Color */}
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
 
         {/* Geographic Tags */}
         <meta name="geo.region" content="IN-RJ" />
-        <meta name="geo.placename" content="Dhanau, Rajasthan" />
+        <meta name="geo.placename" content="Dhanau, Barmer, Rajasthan" />
         <meta name="geo.position" content="27.1767;75.8885" />
         <meta name="ICBM" content="27.1767, 75.8885" />
 
@@ -261,7 +342,7 @@ export default function RootLayout({
         <meta name="rating" content="general" />
         <meta name="revisit-after" content="7 days" />
         <meta name="distribution" content="global" />
-        <meta name="language" content="English" />
+        <meta name="language" content="English, Hindi" />
         <meta name="coverage" content="Worldwide" />
         <meta name="target" content="all" />
         <meta name="audience" content="all" />
@@ -304,11 +385,11 @@ export default function RootLayout({
           }}
         />
 
-        {/* Store Schema */}
+        {/* Local Business Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(storeSchema),
+            __html: JSON.stringify(localBusinessSchema),
           }}
         />
 
@@ -336,7 +417,7 @@ export default function RootLayout({
         </Script>
       </head>
 
-      <body className="bg-black text-white">
+      <body className="bg-black text-white" suppressHydrationWarning>
         <CartProvider>
           <Navbar />
           <main id="main-content" role="main">
