@@ -163,7 +163,7 @@ export default function ProductDetailPage() {
     // Create WhatsApp message
     const message = `Hi! I want to order:\n\n*${product.name}*\nPrice: ₹${product.price.toLocaleString()}\n${selectedSize ? `Size: ${selectedSize}` : ""}\n\nProduct Link: ${window.location.href}`;
 
-    const whatsappNumber = "918741803589"; // Your WhatsApp number
+    const whatsappNumber = "919950388083"; // Your WhatsApp number
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
     window.open(whatsappUrl, "_blank");
