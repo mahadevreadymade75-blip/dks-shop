@@ -10,7 +10,6 @@ interface ProductPreviewProps {
 
 export function ProductPreview({ product, onClose }: ProductPreviewProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  // ✅ FIXED: main image always first, then additional images
   const images = [product.image, ...(product.images || []).filter(Boolean)];
 
   // ✅ ADDED: Calculate discount

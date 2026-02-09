@@ -6,6 +6,7 @@ import Link from "next/link";
 import Rating from "@/components/Rating";
 import Image from "next/image";
 import { useState, useMemo, useCallback } from "react";
+import { resolvePrimaryImage } from "@/utils/image";
 
 interface Props {
   product: Product;
@@ -16,19 +17,22 @@ export default function ProductCard({ product }: Props) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  /* ================= OPTIMIZED IMAGE SOURCE ================= */
-  const imageSrc = useMemo(() => {
-    if (Array.isArray(product.images) && product.images.length > 0) {
-      return product.images[0];
-    }
-    if (product.images && typeof product.images === "string") {
-      return product.images;
-    }
-    if (product.image) {
-      return product.image;
-    }
-    return "/placeholder.jpg";
-  }, [product.images, product.image]);
+  /* ================= FIXED IMAGE SOURCE ================= */
+  // const imageSrc = useMemo(() => {
+  //   if (product.image) {
+  //     return product.image; // ✅ main image first
+  //   }
+  //   if (Array.isArray(product.images) && product.images.length > 0) {
+  //     return product.images[0];
+  //   }
+  //   if (product.images && typeof product.images === "string") {
+  //     return product.images;
+  //   }
+  //   return "/placeholder.jpg";
+  // }, [product.images, product.image]);
+
+  /* ================= FIXED IMAGE SOURCE ================= */
+  const imageSrc = resolvePrimaryImage(product);
 
   /* ================= DISCOUNT CALCULATION ================= */
   const discountPercent = useMemo(() => {

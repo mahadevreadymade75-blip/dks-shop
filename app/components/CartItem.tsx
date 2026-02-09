@@ -4,6 +4,7 @@ import { CartItem as CartItemType } from "@/types/cart";
 import { useCart } from "@/context/CartContext";
 import { memo, useMemo, useCallback } from "react";
 import Image from "next/image";
+import { resolvePrimaryImage } from "@/utils/image";
 
 interface Props {
   item: CartItemType;
@@ -12,23 +13,18 @@ interface Props {
 function CartItem({ item }: Props) {
   const { increaseQty, decreaseQty, removeFromCart } = useCart();
 
-  // 🔥 OPTIMIZED IMAGE RESOLUTION - Memoized
-  const imageSrc = useMemo(() => {
-    // case 1: item.image exists
-    if ((item as any).image) {
-      return (item as any).image;
-    }
+  // /* 🔥 FIXED IMAGE RESOLUTION */
+  // const imageSrc = useMemo(() => {
+  //   const images = [
+  //     (item as any).image,
+  //     ...(((item as any).images || []) as string[]),
+  //   ].filter(Boolean);
 
-    // case 2: item.images exists
-    if (
-      Array.isArray((item as any).images) &&
-      (item as any).images.length > 0
-    ) {
-      return (item as any).images[0];
-    }
+  //   return images.length > 0 ? images[0] : "/placeholder.jpg";
+  // }, [item]);
 
-    return "/placeholder.jpg";
-  }, [item]);
+  /* 🔥 FIXED IMAGE RESOLUTION */
+  const imageSrc = resolvePrimaryImage(item);
 
   // ✅ Memoized total price and savings calculation
   const { totalPrice, itemSavings, itemOriginalTotal } = useMemo(() => {

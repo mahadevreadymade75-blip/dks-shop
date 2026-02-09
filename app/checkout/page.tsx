@@ -3,6 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { resolvePrimaryImage } from "@/utils/image";
 
 export default function Checkout() {
   const { cart, totalPrice, isEmpty } = useCart();
@@ -261,19 +262,15 @@ We'll contact you shortly to confirm your order.
             <div className="bg-white rounded-xl p-6 shadow-md">
               <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 
-              {/* Items with Images */}
               <div className="space-y-4 mb-6 max-h-80 overflow-y-auto scrollbar-thin">
                 {cart.map((item) => {
-                  const imageSrc = Array.isArray((item as any).images)
-                    ? (item as any).images[0]
-                    : (item as any).image || "/placeholder.jpg";
+                  const imageSrc = resolvePrimaryImage(item);
 
                   return (
                     <div
                       key={`${item.id}-${item.size ?? "nosize"}`}
                       className="flex gap-3 pb-4 border-b border-gray-100 last:border-0"
                     >
-                      {/* Product Image */}
                       <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
                         <Image
                           src={imageSrc}
