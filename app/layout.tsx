@@ -287,9 +287,8 @@ export default function RootLayout({
         {/* DNS Prefetch */}
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-      </head>
 
-      <body className="bg-black text-white">
+        {/* GA4 */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-94VNTB23Y3"
           strategy="afterInteractive"
@@ -297,12 +296,15 @@ export default function RootLayout({
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-94VNTB23Y3');
-  `}
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-94VNTB23Y3');
+      `}
         </Script>
+      </head>
+
+      <body className="bg-black text-white">
 
         {/* Organization Schema */}
         <script
